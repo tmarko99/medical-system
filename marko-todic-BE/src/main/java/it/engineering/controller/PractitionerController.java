@@ -1,51 +1,50 @@
 package it.engineering.controller;
 
 import it.engineering.dto.ApiResponse;
-import it.engineering.dto.OrganizationDto;
 import it.engineering.dto.PagedResponse;
-import it.engineering.service.OrganizationService;
+import it.engineering.dto.PractitionerFullDto;
+import it.engineering.dto.PractitionerSimpleDto;
+import it.engineering.service.PractitionerService;
 import it.engineering.utils.AppConstants;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/organization")
-public class OrganizationController {
+@RequestMapping("api/practitioner")
+public class PractitionerController {
+
     @Autowired
-    private  OrganizationService organizationService;
+    private PractitionerService practitionerService;
 
     @GetMapping
     public PagedResponse findAll(@RequestParam(value = "pageNumber", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNumber,
                                  @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                  @RequestParam(value = "sortField", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortField,
                                  @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir){
-        return organizationService.findAll(pageNumber, pageSize, sortField, sortDir);
+        return practitionerService.findAll(pageNumber, pageSize, sortField, sortDir);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrganizationDto> findById(@PathVariable("id") Integer id){
-        return new ResponseEntity<>(organizationService.findById(id), HttpStatus.OK);
+    public ResponseEntity<PractitionerFullDto> findById(@PathVariable("id") Integer id){
+        return new ResponseEntity<>(practitionerService.findById(id), HttpStatus.OK);
     }
 
+
     @PostMapping
-    public ResponseEntity<OrganizationDto> save(@Valid @RequestBody OrganizationDto organizationDto){
-        return new ResponseEntity<>(organizationService.save(organizationDto), HttpStatus.CREATED);
+    public ResponseEntity<PractitionerSimpleDto> save(@RequestBody PractitionerSimpleDto practitionerSimpleDto){
+        return new ResponseEntity<>(practitionerService.save(practitionerSimpleDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrganizationDto> update(@PathVariable("id") Integer id, @Valid @RequestBody OrganizationDto organizationDto){
-        return new ResponseEntity<>(organizationService.update(id, organizationDto), HttpStatus.CREATED);
+    public ResponseEntity<PractitionerSimpleDto> update(@PathVariable("Id") Integer id,
+                                                      @RequestBody PractitionerSimpleDto practitionerSimpleDto){
+        return new ResponseEntity<>(practitionerService.update(id, practitionerSimpleDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> delete(@PathVariable("id") Integer id){
-        return new ResponseEntity<>(organizationService.delete(id), HttpStatus.OK);
+        return new ResponseEntity<>(practitionerService.delete(id), HttpStatus.OK);
     }
 }

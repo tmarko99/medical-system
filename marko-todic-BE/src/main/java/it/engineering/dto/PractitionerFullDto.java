@@ -1,66 +1,52 @@
-package it.engineering.entity;
+package it.engineering.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
-import org.hibernate.Hibernate;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import it.engineering.entity.*;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
-
-@Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"identifier"}) })
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Practitioner {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PractitionerFullDto {
     private Integer id;
+    @NotNull
+    @NotEmpty
+    @Size(min = 5, message = "Minimal number of characters is 5")
     private String identifier;
-    @Column(nullable = false)
+    @NotNull
     private Boolean active;
-    @Column(nullable = false)
+    @NotNull
+    @NotEmpty
+    @Size(min = 5, message = "Minimal number of characters is 3")
     private String name;
-    @Column(nullable = false)
+    @NotNull
+    @NotEmpty
+    @Size(min = 5, message = "Minimal number of characters is 3")
     private String surname;
-    @Enumerated(EnumType.STRING)
+    @NotNull
     private Gender gender;
-    @Column(name = "birth_Date", nullable = false)
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotNull
+    @NotEmpty
+    @Past
     private Date birthDate;
     private String address;
     private String phone;
     private String email;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @NotNull
     private Qualification qualification;
-    @OneToMany(mappedBy = "practitioner")
-    @JsonBackReference
-    private List<Patient> patients = new ArrayList<>();
-    @ManyToOne
-    @JoinColumn(name = "organization_id")
-    @JsonManagedReference
+    private List<Patient> patients;
+    private List<Examination> examinations;
     private Organization organization;
-    @ManyToMany
-    @JoinTable(
-            name = "practitioner_examination",
-            joinColumns = @JoinColumn(name = "practitioner_id"),
-            inverseJoinColumns = @JoinColumn(name = "examination_id")
-    )
-    //this annotation is used to prevent infinite-recursion
-    @JsonManagedReference
-    List<Examination> examinations = new ArrayList<>();
 
-    public Practitioner() {
+    public PractitionerFullDto() {
     }
 
-    public Practitioner(Integer id, String identifier, Boolean active, String name, String surname, Gender gender, Date birthDate, String address, String phone, String email, Qualification qualification, List<Patient> patients, Organization organization, List<Examination> examinations) {
+    public PractitionerFullDto(Integer id, String identifier, Boolean active, String name, String surname, Gender gender, Date birthDate, String address, String phone, String email, Qualification qualification, List<Patient> patients, List<Examination> examinations, Organization organization) {
         this.id = id;
         this.identifier = identifier;
         this.active = active;
@@ -73,8 +59,8 @@ public class Practitioner {
         this.email = email;
         this.qualification = qualification;
         this.patients = patients;
-        this.organization = organization;
         this.examinations = examinations;
+        this.organization = organization;
     }
 
     public Integer getId() {
@@ -173,14 +159,6 @@ public class Practitioner {
         this.patients = patients;
     }
 
-    public Organization getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
-    }
-
     public List<Examination> getExaminations() {
         return examinations;
     }
@@ -189,16 +167,11 @@ public class Practitioner {
         this.examinations = examinations;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Practitioner that = (Practitioner) o;
-        return id != null && Objects.equals(id, that.id);
+    public Organization getOrganization() {
+        return organization;
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 }

@@ -1,5 +1,8 @@
 package it.engineering.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -10,6 +13,8 @@ import java.util.Objects;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"identifier", "name"}) })
+// this annotation help with the serialization of entities with bidirectional relationships
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Organization {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +31,14 @@ public class Organization {
     private String phone;
     private String email;
     @OneToMany(mappedBy = "organization")
+    @JsonBackReference
     private List<Practitioner> practitioners = new ArrayList<>();
     @OneToMany(mappedBy = "organization")
+    @JsonBackReference
     private List<Patient> patients = new ArrayList<>();
     @OneToMany(mappedBy = "organization")
+    //this annotation is used to prevent infinite-recursion
+    @JsonBackReference
     private List<Examination> examinations = new ArrayList<>();
 
     public Organization() {
