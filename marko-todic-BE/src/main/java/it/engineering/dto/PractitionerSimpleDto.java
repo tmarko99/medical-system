@@ -20,11 +20,11 @@ public class PractitionerSimpleDto {
     private Boolean active;
     @NotNull
     @NotEmpty
-    @Size(min = 5, message = "Minimal number of characters is 3")
+    @Size(min = 3, message = "Minimal number of characters is 3")
     private String name;
     @NotNull
     @NotEmpty
-    @Size(min = 5, message = "Minimal number of characters is 3")
+    @Size(min = 3, message = "Minimal number of characters is 3")
     private String surname;
     @NotNull
     private Gender gender;

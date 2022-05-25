@@ -1,51 +1,47 @@
-package it.engineering.entity;
+package it.engineering.dto;
 
-import org.hibernate.Hibernate;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import it.engineering.entity.*;
 
-import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
-@Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"identifier"}) })
-public class Patient {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PatientSimpleDto {
     private Integer id;
+    @NotNull
+    @NotEmpty
+    @Size(min = 5, message = "Minimal number of characters is 5")
     private String identifier;
-    @Column(nullable = false)
+    @NotNull
     private Boolean active;
-    @Column(nullable = false)
+    @NotNull
+    @NotEmpty
+    @Size(min = 3, message = "Minimal number of characters is 3")
     private String name;
-    @Column(nullable = false)
+    @NotNull
+    @NotEmpty
+    @Size(min = 3, message = "Minimal number of characters is 3")
     private String surname;
-    @Enumerated(EnumType.STRING)
+    @NotNull
     private Gender gender;
-    @Column(name = "birth_date", nullable = false)
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotNull
+    @Past
     private Date birthDate;
     private String address;
     private String phone;
+    @Email
     private String email;
-    @Column(columnDefinition = "boolean default false")
-    private Boolean deceased;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "marital_Status")
+    private Boolean deceased = false;
+    @NotNull
     private MaritalStatus maritalStatus;
-    @ManyToOne
-    @JoinColumn(name = "practitioner_id", nullable = false)
-    private Practitioner practitioner;
-    @ManyToOne
-    @JoinColumn(name = "organization_id", nullable = false)
-    private Organization organization;
-    @OneToMany(mappedBy = "patient")
-    private List<Examination> examinations;
+    private Integer practitioner;
+    private Integer organization;
 
-    public Patient() {
+    public PatientSimpleDto() {
     }
 
-    public Patient(Integer id, String identifier, Boolean active, String name, String surname, Gender gender, Date birthDate, String address, String phone, String email, Boolean deceased, MaritalStatus maritalStatus, Practitioner practitioner, Organization organization, List<Examination> examinations) {
+    public PatientSimpleDto(Integer id, String identifier, Boolean active, String name, String surname, Gender gender, Date birthDate, String address, String phone, String email, Boolean deceased, MaritalStatus maritalStatus, Integer practitioner, Integer organization) {
         this.id = id;
         this.identifier = identifier;
         this.active = active;
@@ -60,7 +56,6 @@ public class Patient {
         this.maritalStatus = maritalStatus;
         this.practitioner = practitioner;
         this.organization = organization;
-        this.examinations = examinations;
     }
 
     public Integer getId() {
@@ -159,40 +154,19 @@ public class Patient {
         this.maritalStatus = maritalStatus;
     }
 
-    public Practitioner getPractitioner() {
+    public Integer getPractitioner() {
         return practitioner;
     }
 
-    public void setPractitioner(Practitioner practitioner) {
+    public void setPractitioner(Integer practitioner) {
         this.practitioner = practitioner;
     }
 
-    public Organization getOrganization() {
+    public Integer getOrganization() {
         return organization;
     }
 
-    public void setOrganization(Organization organization) {
+    public void setOrganization(Integer organization) {
         this.organization = organization;
-    }
-
-    public List<Examination> getExaminations() {
-        return examinations;
-    }
-
-    public void setExaminations(List<Examination> examinations) {
-        this.examinations = examinations;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Patient patient = (Patient) o;
-        return id != null && Objects.equals(id, patient.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }

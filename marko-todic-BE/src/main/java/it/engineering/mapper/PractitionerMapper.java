@@ -5,8 +5,9 @@ import it.engineering.dto.PractitionerSimpleDto;
 import it.engineering.entity.Practitioner;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
-@Mapper
+@Mapper(uses= { PatientMapper.class })
 public interface PractitionerMapper {
     @Mapping(target = "patients", ignore = true)
     @Mapping(target = "examinations", ignore = true)
@@ -17,7 +18,6 @@ public interface PractitionerMapper {
     @Mapping(target = "numberOfPatients", expression = "java(practitioner.getPatients() != null ? practitioner.getPatients().size() : 0)")
     PractitionerSimpleDto toDto(Practitioner practitioner);
 
-    @Mapping(target = "patients", source = "patients")
     @Mapping(target = "examinations", source = "examinations")
     @Mapping(target = "organization", source = "organization")
     PractitionerFullDto toFullDto(Practitioner practitioner);

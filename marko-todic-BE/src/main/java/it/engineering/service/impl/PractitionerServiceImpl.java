@@ -74,7 +74,7 @@ public class PractitionerServiceImpl implements PractitionerService {
     @Override
     public PractitionerSimpleDto update(Integer id, PractitionerSimpleDto practitionerSimpleDto) {
         Practitioner practitioner = practitionerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Organization", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Practitioner", "id", id));
 
         List<Practitioner> practitioners = practitionerRepository.findAll();
 
@@ -109,7 +109,7 @@ public class PractitionerServiceImpl implements PractitionerService {
     @Override
     public ApiResponse delete(Integer id) {
         Practitioner practitioner = practitionerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Organization", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Practitioner", "id", id));
 
         long numberOfExaminations = practitioner.getExaminations().stream()
                 .filter(examination -> examination.getStatus().equals(Status.IN_PROGRESS)).count();

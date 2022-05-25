@@ -21,11 +21,11 @@ public class PractitionerFullDto {
     private Boolean active;
     @NotNull
     @NotEmpty
-    @Size(min = 5, message = "Minimal number of characters is 3")
+    @Size(min = 3, message = "Minimal number of characters is 3")
     private String name;
     @NotNull
     @NotEmpty
-    @Size(min = 5, message = "Minimal number of characters is 3")
+    @Size(min = 3, message = "Minimal number of characters is 3")
     private String surname;
     @NotNull
     private Gender gender;
@@ -39,14 +39,14 @@ public class PractitionerFullDto {
     private String email;
     @NotNull
     private Qualification qualification;
-    private List<Patient> patients;
+    private List<PatientSimpleDto> patients;
     private List<Examination> examinations;
     private Organization organization;
 
     public PractitionerFullDto() {
     }
 
-    public PractitionerFullDto(Integer id, String identifier, Boolean active, String name, String surname, Gender gender, Date birthDate, String address, String phone, String email, Qualification qualification, List<Patient> patients, List<Examination> examinations, Organization organization) {
+    public PractitionerFullDto(Integer id, String identifier, Boolean active, String name, String surname, Gender gender, Date birthDate, String address, String phone, String email, Qualification qualification, List<PatientSimpleDto> patients, List<Examination> examinations, Organization organization) {
         this.id = id;
         this.identifier = identifier;
         this.active = active;
@@ -151,11 +151,11 @@ public class PractitionerFullDto {
         this.qualification = qualification;
     }
 
-    public List<Patient> getPatients() {
+    public List<PatientSimpleDto> getPatients() {
         return patients;
     }
 
-    public void setPatients(List<Patient> patients) {
+    public void setPatients(List<PatientSimpleDto> patients) {
         this.patients = patients;
     }
 
