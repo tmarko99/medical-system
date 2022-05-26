@@ -14,16 +14,13 @@ public class ServiceType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    @OneToOne
-    private Examination examination;
 
     public ServiceType() {
     }
 
-    public ServiceType(Integer id, String name, Examination examination) {
+    public ServiceType(Integer id, String name) {
         this.id = id;
         this.name = name;
-        this.examination = examination;
     }
 
     public Integer getId() {
@@ -42,13 +39,6 @@ public class ServiceType {
         this.name = name;
     }
 
-    public Examination getExamination() {
-        return examination;
-    }
-
-    public void setExamination(Examination examination) {
-        this.examination = examination;
-    }
 
     @Override
     public boolean equals(Object o) {

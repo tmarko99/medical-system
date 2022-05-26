@@ -59,7 +59,7 @@ public class PractitionerServiceImpl implements PractitionerService {
     @Override
     public PractitionerFullDto findById(Integer id) {
         Practitioner practitioner = practitionerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Organization", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Practitioner", "id", id));
 
         return practitionerMapper.toFullDto(practitioner);
     }

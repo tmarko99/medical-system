@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(uses= { PatientMapper.class })
+@Mapper(uses= { PatientMapper.class, ExaminationMapper.class })
 public interface PractitionerMapper {
     @Mapping(target = "patients", ignore = true)
     @Mapping(target = "examinations", ignore = true)

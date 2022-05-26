@@ -40,13 +40,13 @@ public class PractitionerFullDto {
     @NotNull
     private Qualification qualification;
     private List<PatientSimpleDto> patients;
-    private List<Examination> examinations;
+    private List<ExaminationDto> examinations;
     private Organization organization;
 
     public PractitionerFullDto() {
     }
 
-    public PractitionerFullDto(Integer id, String identifier, Boolean active, String name, String surname, Gender gender, Date birthDate, String address, String phone, String email, Qualification qualification, List<PatientSimpleDto> patients, List<Examination> examinations, Organization organization) {
+    public PractitionerFullDto(Integer id, String identifier, Boolean active, String name, String surname, Gender gender, Date birthDate, String address, String phone, String email, Qualification qualification, List<PatientSimpleDto> patients, List<ExaminationDto> examinations, Organization organization) {
         this.id = id;
         this.identifier = identifier;
         this.active = active;
@@ -159,11 +159,11 @@ public class PractitionerFullDto {
         this.patients = patients;
     }
 
-    public List<Examination> getExaminations() {
+    public List<ExaminationDto> getExaminations() {
         return examinations;
     }
 
-    public void setExaminations(List<Examination> examinations) {
+    public void setExaminations(List<ExaminationDto> examinations) {
         this.examinations = examinations;
     }
 

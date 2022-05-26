@@ -1,56 +1,43 @@
-package it.engineering.entity;
+package it.engineering.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import it.engineering.entity.*;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
-@Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"identifier"}) })
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Examination {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ExaminationFullDto {
     private Integer id;
+    @NotNull
+    @NotEmpty
+    @Size(min = 5, message = "Minimal number of characters is 5")
     private String identifier;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @NotNull
     private Status status;
-    @ManyToOne
-    @JoinColumn(name = "service_type_id")
+    @NotNull
     private ServiceType serviceType;
-    @Enumerated(EnumType.STRING)
+    @NotNull
     private Priority priority;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @NotNull
     private Date startDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @NotNull
     private Date endDate;
+    @NotNull
+    @NotEmpty
     private String diagnosis;
-    @ManyToOne
-    @JoinColumn(name = "organization_id", nullable = false)
     private Organization organization;
-    @ManyToMany
-    @JoinTable(
-            name = "examination_practitioner",
-            joinColumns = @JoinColumn(name = "examination_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "practitioner_id", referencedColumnName = "id")
-    )
-    @JsonBackReference
-    List<Practitioner> practitioners = new ArrayList<>();
-    @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
-    private Patient patient;
+    private List<PractitionerSimpleDto> practitioners;
+    private PatientSimpleDto patient;
 
-    public Examination() {
+    public ExaminationFullDto() {
     }
 
-    public Examination(Integer id, String identifier, Status status, ServiceType serviceType, Priority priority, Date startDate, Date endDate, String diagnosis, Organization organization, List<Practitioner> practitioners, Patient patient) {
+    public ExaminationFullDto(Integer id, String identifier, Status status, ServiceType serviceType, Priority priority, Date startDate, Date endDate, String diagnosis, Organization organization, List<PractitionerSimpleDto> practitioners, PatientSimpleDto patient) {
         this.id = id;
         this.identifier = identifier;
         this.status = status;
@@ -136,19 +123,19 @@ public class Examination {
         this.organization = organization;
     }
 
-    public List<Practitioner> getPractitioners() {
+    public List<PractitionerSimpleDto> getPractitioners() {
         return practitioners;
     }
 
-    public void setPractitioners(List<Practitioner> practitioners) {
+    public void setPractitioners(List<PractitionerSimpleDto> practitioners) {
         this.practitioners = practitioners;
     }
 
-    public Patient getPatient() {
+    public PatientSimpleDto getPatient() {
         return patient;
     }
 
-    public void setPatient(Patient patient) {
+    public void setPatient(PatientSimpleDto patient) {
         this.patient = patient;
     }
 }

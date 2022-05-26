@@ -47,13 +47,7 @@ public class Practitioner {
     @JoinColumn(name = "organization_id")
     @JsonManagedReference
     private Organization organization;
-    @ManyToMany
-    @JoinTable(
-            name = "practitioner_examination",
-            joinColumns = @JoinColumn(name = "practitioner_id"),
-            inverseJoinColumns = @JoinColumn(name = "examination_id")
-    )
-    //this annotation is used to prevent infinite-recursion
+    @ManyToMany(mappedBy = "practitioners")
     @JsonManagedReference
     List<Examination> examinations = new ArrayList<>();
 
