@@ -2,6 +2,7 @@ package it.engineering.service.impl;
 
 import it.engineering.dto.ApiResponse;
 import it.engineering.dto.OrganizationDto;
+import it.engineering.dto.OrganizationFullDto;
 import it.engineering.dto.PagedResponse;
 import it.engineering.entity.Organization;
 import it.engineering.entity.Status;
@@ -78,7 +79,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public OrganizationDto findById(Integer id) {
+    public OrganizationFullDto findByIdView(Integer id) {
+        Organization organization = organizationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Organization", "id", id));
+
+        return organizationMapper.toFullDto(organization);
+    }
+
+    @Override
+    public OrganizationDto findByIdEdit(Integer id) {
         Organization organization = organizationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Organization", "id", id));
 

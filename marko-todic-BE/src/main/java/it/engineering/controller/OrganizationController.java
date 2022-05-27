@@ -2,6 +2,7 @@ package it.engineering.controller;
 
 import it.engineering.dto.ApiResponse;
 import it.engineering.dto.OrganizationDto;
+import it.engineering.dto.OrganizationFullDto;
 import it.engineering.dto.PagedResponse;
 import it.engineering.service.OrganizationService;
 import it.engineering.utils.AppConstants;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/organization")
 public class OrganizationController {
@@ -29,9 +31,14 @@ public class OrganizationController {
         return organizationService.findAll(pageNumber, pageSize, sortField, sortDir);
     }
 
+    @GetMapping("/view/{id}")
+    public ResponseEntity<OrganizationFullDto> findByIdView(@PathVariable("id") Integer id){
+        return new ResponseEntity<>(organizationService.findByIdView(id), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<OrganizationDto> findById(@PathVariable("id") Integer id){
-        return new ResponseEntity<>(organizationService.findById(id), HttpStatus.OK);
+    public ResponseEntity<OrganizationDto> findByIdEdit(@PathVariable("id") Integer id){
+        return new ResponseEntity<>(organizationService.findByIdEdit(id), HttpStatus.OK);
     }
 
     @PostMapping
@@ -44,6 +51,7 @@ public class OrganizationController {
         return new ResponseEntity<>(organizationService.update(id, organizationDto), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*")
     @PutMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> delete(@PathVariable("id") Integer id){
         return new ResponseEntity<>(organizationService.delete(id), HttpStatus.OK);

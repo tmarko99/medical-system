@@ -1,0 +1,41 @@
+<div class="container">
+  <h1>List of cities</h1>
+
+  <div class="d-flex mb-4">
+    <button class="btn btn-outline-warning mr-3" routerLink="">Home</button>
+    <button class="btn btn-outline-info" routerLink="/organization/organization-add">Add Organization</button>
+  </div>
+</div>
+
+<table class="table table-striped mx-auto col-lg-11 col-md-6">
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Identifier</th>
+    <th>Active</th>
+    <th>Type</th>
+    <th>Name</th>
+    <th>Address</th>
+    <th>Phone</th>
+    <th>Email</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let organization of organizations">
+    <td>{{ organization.id }}</td>
+    <td>{{ organization.identifier }}</td>
+    <td>{{ organization.active }}</td>
+    <td>{{ organization.type }}</td>
+    <td>{{ organization.name }}</td>
+    <td>{{ organization.address }}</td>
+    <td>{{ organization.phone }}</td>
+    <td>{{ organization.email }}</td>
+    <td>
+      <button [routerLink]="['/organization/organization-details/', organization.id]" class="btn btn-outline-warning mr-3">View</button>
+      <button [routerLink]="['/organization/organization-edit/', organization.id]" class="btn btn-outline-success mr-3">Edit</button>
+      <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(organization)">Delete</button>
+    </td>
+  </tr>
+  </tbody>
+</table>

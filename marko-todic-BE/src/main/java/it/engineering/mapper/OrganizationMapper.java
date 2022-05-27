@@ -1,6 +1,7 @@
 package it.engineering.mapper;
 
 import it.engineering.dto.OrganizationDto;
+import it.engineering.dto.OrganizationFullDto;
 import it.engineering.entity.Organization;
 import it.engineering.entity.OrganizationType;
 import it.engineering.entity.Practitioner;
@@ -10,7 +11,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper
+@Mapper(uses = { PractitionerMapper.class, PatientMapper.class, ExaminationMapper.class })
 public interface OrganizationMapper {
     @Mapping(target = "practitioners", ignore = true)
     @Mapping(target = "patients", ignore = true)
@@ -22,6 +23,10 @@ public interface OrganizationMapper {
     @Mapping(target = "numberOfPatients", expression = "java(organization.getPatients() != null ? organization.getPatients().size() : 0)")
     @Mapping(target = "numberOfExaminations", expression = "java(organization.getExaminations() != null ? organization.getExaminations().size() : 0)")
     OrganizationDto toDto(Organization organization);
+
+
+    @Mapping(target = "examinations.organization", ignore = true)
+    OrganizationFullDto toFullDto(Organization organization);
 
 
     default OrganizationType getOrganizationType(String type){
