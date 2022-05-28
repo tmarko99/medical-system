@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { Organization } from 'src/app/core/models/organization';
+import { OrganizationType } from 'src/app/core/models/organizationType';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { SortableHeaderDirective, SortEvent } from 'src/app/shared/directives/sortable-header.directive';
 
 @Component({
   selector: 'app-organization-list',
@@ -14,6 +16,20 @@ import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog
 export class OrganizationListComponent implements OnInit {
 
   organizations: Organization[] = [];
+  organizationsFilter: Organization[] = [];
+  searchValue: string = '';
+  organizationValue: string = '';
+  organizationTypes = OrganizationType;
+
+  currentPage = 1;
+  totalItems = 10;
+  pageSize = 5;
+  sortField:string = 'name';
+  sortDir: string = 'asc';
+  availablePageSize = [2, 5, 10, 15, 20];
+
+  @ViewChildren(SortableHeaderDirective)
+  headers: QueryList<SortableHeaderDirective>
 
   constructor(private organizationService: OrganizationService, private toastr: ToastrService,
     private activatedRoute: ActivatedRoute, private modalService: NgbModal) { }
@@ -31,8 +47,12 @@ export class OrganizationListComponent implements OnInit {
   }
 
   findAll(){
-    this.organizationService.findAll().subscribe(organizations => {
-      this.organizations = organizations['content'];
+    this.organizationService.findAll(this.organizationValue, this.currentPage - 1, this.pageSize, this.sortField, this.sortDir)
+    .subscribe(organizations => {
+      this.organizations = organizations.content;
+      this.organizationsFilter = organizations.content;
+      this.totalItems = organizations.totalElements;
+      this.pageSize = organizations.pageSize;
     })
   }
 
@@ -41,7 +61,6 @@ export class OrganizationListComponent implements OnInit {
     modalRef.componentInstance.message = `Are you sure you want to delete organization <strong>${organization.name}</strong> ?`;
     modalRef.componentInstance.headerText = 'Deleting organization';
     modalRef.result.then(
-      // NAPOMENA: Ovde ce samo ako je zadovoljen prvi uslov izvrsiti ovo drugo.
       (result) => result === 'Ok' && this.deleteSelectedOrganization(organization.id)
     );
   }
@@ -51,6 +70,58 @@ export class OrganizationListComponent implements OnInit {
       this.toastr.success("Organization deleted successfully");
       this.findAll();
     });
+  }
+
+  onPageChange() {
+    this.findAll();
+  }
+
+  onSort(sortEvent: SortEvent) {
+    this.sortField = sortEvent.column;
+    this.sortDir = sortEvent.direction;
+    this.headers.forEach( header => {
+      if (header.sortable !== sortEvent.column) {
+        header.direction = '';
+      }
+    })
+    this.findAll();
+    console.log('sort event:', sortEvent);
+  }
+
+  onPageSizeChange() {
+    this.findAll();
+  }
+
+
+  search(){
+    let arr = this.organizationsFilter;
+
+    let search = this.searchValue.trim().toLowerCase();
+
+    if(search != ''){
+      arr = arr.filter((organization) => organization.name.toLowerCase().includes(search));
+    }
+
+    this.organizations = arr;
+  }
+
+  filter(){
+    this.findAll();
+  }
+
+  getBadgeColor(organizationType){
+    switch(organizationType){
+      case 'HOSPITAL':
+        return 'badge badge-primary';
+      case 'INSURANCE_COMPANY':
+        return 'badge badge-success';
+      case 'EDUCATION_INSTITUTE':
+        return 'badge badge-warning';
+      case 'CLINICAL_RESEARCH':
+        return 'badge badge-info';
+      case 'OTHER':
+        return 'badge badge-secondary';
+    }
   }
 
 }

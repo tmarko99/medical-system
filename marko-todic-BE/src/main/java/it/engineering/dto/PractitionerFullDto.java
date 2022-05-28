@@ -31,7 +31,6 @@ public class PractitionerFullDto {
     private Gender gender;
     @JsonFormat(pattern = "yyyy-MM-dd")
     @NotNull
-    @NotEmpty
     @Past
     private Date birthDate;
     private String address;

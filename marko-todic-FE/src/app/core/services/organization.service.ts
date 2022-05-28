@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Organization } from '../models/organization';
 import { OrganizationView } from '../models/organization-view';
+import { PageDto } from '../models/page.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +13,15 @@ export class OrganizationService {
 
   constructor(private httpClient: HttpClient) { }
 
-  findAll(): Observable<Organization[]>{
-    return this.httpClient.get<Organization[]>(`${environment.serverUrl}/api/organization`);
+  findAll(filter: string, page: number, size: number, sortField: string, sortDir: string){
+    return this.httpClient.get<PageDto<Organization>>(`${environment.serverUrl}/api/organization?filter=${filter}&pageNumber=${page}&pageSize=${size}&sortField=${sortField}&sortDir=${sortDir}`);
   }
 
-  findByIdEdit(id: number): Observable<Organization>{
+  findAllSimple(): Observable<Organization[]>{
+    return this.httpClient.get<Organization[]>(`${environment.serverUrl}/api/organization/findAll`);
+  }
+
+  findByIdSimple(id: number): Observable<Organization>{
     return this.httpClient.get<Organization>(`${environment.serverUrl}/api/organization/${id}`);
   }
 

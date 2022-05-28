@@ -30,7 +30,7 @@ public class Organization {
     private String address;
     private String phone;
     private String email;
-    @OneToMany(mappedBy = "organization")
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Practitioner> practitioners = new ArrayList<>();
     @OneToMany(mappedBy = "organization")

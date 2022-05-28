@@ -28,7 +28,7 @@
     <div class="d-flex flex-column">
       <label for="type">Organization type</label>
       <select id="type" class="custom-select" formControlName="type">
-        <option *ngFor="let orgType of organizationTypes | keyvalue" [ngValue]="orgType.key">
+        <option *ngFor="let orgType of organizationTypes | keyvalue" [ngValue]="orgType.value">
           {{ orgType.value }}</option>
       </select>
       <p class="alert alert-danger" *ngIf="hasErrors('type', 'required')">
@@ -64,8 +64,6 @@
         Email is in invalid format
       </p>
     </div>
-
-    {{ addForm.value | json }}
 
     <div class="d-flex justify-content-around mt-3">
       <button (click)="save()" class="btn btn-primary" [disabled]="addForm.invalid">Save</button>

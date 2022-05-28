@@ -23,7 +23,7 @@ export class OrganizationEditComponent implements OnInit {
 
   ngOnInit(): void {
     const organizationId = this.activatedRoute.snapshot.params['id'];
-    this.organizationService.findByIdEdit(organizationId).subscribe(organization => {
+    this.organizationService.findByIdSimple(organizationId).subscribe(organization => {
       this.organization = organization;
 
       this.createForm();

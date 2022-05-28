@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 
 @Repository
 public interface PractitionerRepository extends JpaRepository<Practitioner, Integer> {
-    @Query("SELECT p FROM Practitioner p WHERE p.active=true")
+    @Query("SELECT p FROM Practitioner p WHERE p.active=true AND p.organization.active=true")
     Page<Practitioner> findAll(Pageable pageable);
 
     @Query("UPDATE Practitioner p SET p.active=false WHERE p.id=:id")

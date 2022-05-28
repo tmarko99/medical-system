@@ -1,6 +1,7 @@
 package it.engineering.repository;
 
 import it.engineering.entity.Organization;
+import it.engineering.entity.OrganizationType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,10 @@ import java.util.List;
 public interface OrganizationRepository extends JpaRepository<Organization, Integer> {
     @Query("SELECT o FROM Organization o WHERE o.active=true")
     Page<Organization> findAll(Pageable pageable);
+    @Query("SELECT o FROM Organization o WHERE o.active=true AND o.type=:filter")
+    Page<Organization> findAll(@Param("filter") OrganizationType filter, Pageable pageable);
+    @Query("SELECT o FROM Organization o WHERE o.active=true")
+    List<Organization> findAll();
     @Query("UPDATE Organization o SET o.active=false WHERE o.id=:id")
     @Modifying
     @Transactional

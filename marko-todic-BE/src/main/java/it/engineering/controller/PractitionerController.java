@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/practitioner")
 public class PractitionerController {
@@ -26,20 +29,25 @@ public class PractitionerController {
         return practitionerService.findAll(pageNumber, pageSize, sortField, sortDir);
     }
 
+    @GetMapping("/view/{id}")
+    public ResponseEntity<PractitionerFullDto> findByIdView(@PathVariable("id") Integer id){
+        return new ResponseEntity<>(practitionerService.findByIdView(id), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<PractitionerFullDto> findById(@PathVariable("id") Integer id){
-        return new ResponseEntity<>(practitionerService.findById(id), HttpStatus.OK);
+    public ResponseEntity<PractitionerSimpleDto> findById(@PathVariable("id") Integer id){
+        return new ResponseEntity<>(practitionerService.findByIdSimple(id), HttpStatus.OK);
     }
 
 
     @PostMapping
-    public ResponseEntity<PractitionerSimpleDto> save(@RequestBody PractitionerSimpleDto practitionerSimpleDto){
+    public ResponseEntity<PractitionerSimpleDto> save(@Valid @RequestBody PractitionerSimpleDto practitionerSimpleDto){
         return new ResponseEntity<>(practitionerService.save(practitionerSimpleDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PractitionerSimpleDto> update(@PathVariable("Id") Integer id,
-                                                      @RequestBody PractitionerSimpleDto practitionerSimpleDto){
+    public ResponseEntity<PractitionerSimpleDto> update(@PathVariable("id") Integer id,
+                                                      @Valid @RequestBody PractitionerSimpleDto practitionerSimpleDto){
         return new ResponseEntity<>(practitionerService.update(id, practitionerSimpleDto), HttpStatus.CREATED);
     }
 

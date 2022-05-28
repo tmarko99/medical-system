@@ -1,5 +1,5 @@
 <div class="container">
-  <h1>List of cities</h1>
+  <h1>List of organizations</h1>
 
   <div class="d-flex mb-4">
     <button class="btn btn-outline-warning mr-3" routerLink="">Home</button>
@@ -7,35 +7,74 @@
   </div>
 </div>
 
-<table class="table table-striped mx-auto col-lg-11 col-md-6">
-  <thead>
-  <tr>
-    <th>Id</th>
-    <th>Identifier</th>
-    <th>Active</th>
-    <th>Type</th>
-    <th>Name</th>
-    <th>Address</th>
-    <th>Phone</th>
-    <th>Email</th>
-    <th>Actions</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let organization of organizations">
-    <td>{{ organization.id }}</td>
-    <td>{{ organization.identifier }}</td>
-    <td>{{ organization.active }}</td>
-    <td>{{ organization.type }}</td>
-    <td>{{ organization.name }}</td>
-    <td>{{ organization.address }}</td>
-    <td>{{ organization.phone }}</td>
-    <td>{{ organization.email }}</td>
-    <td>
-      <button [routerLink]="['/organization/organization-details/', organization.id]" class="btn btn-outline-warning mr-3">View</button>
-      <button [routerLink]="['/organization/organization-edit/', organization.id]" class="btn btn-outline-success mr-3">Edit</button>
-      <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(organization)">Delete</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
+<div class="row">
+  <div class="d-flex mb-4 col-lg-4 col-md-6 mx-auto">
+    <input type="text" class="form-control" ngModel matInput placeholder="Search" name="search" search #searchInput="ngModel"
+      [(ngModel)]="searchValue" (keyup)="search()">
+  </div>
+  <div class="d-flex mb-4 col-lg-4 col-md-6 mx-2">
+    <!-- <label class="mx-2">Organization type:</label> -->
+    <select class="custom-select col-lg-5" [(ngModel)]="organizationValue" ngModel (change)="filter()">
+      <option value="">Any organization</option>
+      <option *ngFor="let organizationType of organizationTypes | keyvalue" [value]="organizationType.key">
+        {{ organizationType.value }}
+      </option>
+    </select>
+  </div>
+</div>
+
+<ng-container *ngIf="organizations.length > 0; else noResults">
+  <table class="table table-striped mx-auto col-lg-11 col-md-6">
+    <thead>
+    <tr>
+      <th sortable="id" (sort)="onSort($event)" scope="col">Id</th>
+      <th sortable="identifier" (sort)="onSort($event)" scope="col">Identifier</th>
+      <th sortable="active" (sort)="onSort($event)" scope="col">Active</th>
+      <th sortable="type" (sort)="onSort($event)" scope="col">Type</th>
+      <th sortable="name" (sort)="onSort($event)" scope="col">Name</th>
+      <th sortable="address" (sort)="onSort($event)" scope="col">Address</th>
+      <th sortable="phone" (sort)="onSort($event)" scope="col">Phone</th>
+      <th sortable="email" (sort)="onSort($event)" scope="col">Email</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let organization of organizations">
+      <td>{{ organization.id }}</td>
+      <td>{{ organization.identifier }}</td>
+      <td>{{ organization.active }}</td>
+      <td>
+        <span [ngClass]="getBadgeColor(organization.type)">{{ organization.type }}</span>
+      </td>
+      <td>{{ organization.name }}</td>
+      <td>{{ organization.address }}</td>
+      <td>{{ organization.phone }}</td>
+      <td>{{ organization.email }}</td>
+      <td>
+        <button [routerLink]="['/organization/organization-details/', organization.id]" class="btn btn-outline-warning mr-3">View</button>
+        <button [routerLink]="['/organization/organization-edit/', organization.id]" class="btn btn-outline-success mr-3">Edit</button>
+        <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(organization)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</ng-container>
+
+<div class="d-flex justify-content-center align-items-start">
+  <select class="custom-select col-1 mx-2" (change)="onPageSizeChange()" [(ngModel)]="pageSize" >
+    <option *ngFor="let size of availablePageSize" [ngValue]="size">{{size}}</option>
+  </select>
+  <div class="d-flex justify-content-center">
+    <ngb-pagination
+      [(page)]="currentPage"
+      [pageSize]="pageSize"
+      [boundaryLinks]="true"
+      (pageChange)="onPageChange()"
+      [collectionSize]="totalItems">
+    </ngb-pagination>
+  </div>
+</div>
+
+<ng-template #noResults>
+  <h1 class="text-center">No results to show</h1>
+</ng-template>

@@ -1,16 +1,12 @@
 package it.engineering.controller;
 
-import it.engineering.dto.ApiResponse;
-import it.engineering.dto.OrganizationDto;
-import it.engineering.dto.OrganizationFullDto;
-import it.engineering.dto.PagedResponse;
+import it.engineering.dto.*;
+import it.engineering.entity.OrganizationType;
 import it.engineering.service.OrganizationService;
 import it.engineering.utils.AppConstants;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,11 +20,17 @@ public class OrganizationController {
     private  OrganizationService organizationService;
 
     @GetMapping
-    public PagedResponse findAll(@RequestParam(value = "pageNumber", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNumber,
+    public PagedResponse findAll(@RequestParam(value = "filter", required = false) OrganizationType filter,
+                                 @RequestParam(value = "pageNumber", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNumber,
                                  @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                  @RequestParam(value = "sortField", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortField,
                                  @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir){
-        return organizationService.findAll(pageNumber, pageSize, sortField, sortDir);
+        return organizationService.findAll(filter, pageNumber, pageSize, sortField, sortDir);
+    }
+
+    @GetMapping("/findAll")
+    public ResponseEntity<List<OrganizationIdentifierNameDto>> findAllSimple(){
+        return new ResponseEntity<>(organizationService.findAllSimple(), HttpStatus.OK);
     }
 
     @GetMapping("/view/{id}")
@@ -37,7 +39,7 @@ public class OrganizationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrganizationDto> findByIdEdit(@PathVariable("id") Integer id){
+    public ResponseEntity<OrganizationDto> findByIdSimple(@PathVariable("id") Integer id){
         return new ResponseEntity<>(organizationService.findByIdEdit(id), HttpStatus.OK);
     }
 
@@ -51,7 +53,6 @@ public class OrganizationController {
         return new ResponseEntity<>(organizationService.update(id, organizationDto), HttpStatus.CREATED);
     }
 
-    @CrossOrigin(origins = "*")
     @PutMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> delete(@PathVariable("id") Integer id){
         return new ResponseEntity<>(organizationService.delete(id), HttpStatus.OK);

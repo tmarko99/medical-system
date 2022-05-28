@@ -1,0 +1,102 @@
+<div class="d-flex flex-column mx-auto col-lg-8 col-md-6 p-3" *ngIf="addForm">
+  <form [formGroup]="addForm">
+    <div class="d-flex flex-column">
+      <label for="identifier">Identifier</label>
+      <input type="text" class="form-control" formControlName="identifier">
+      <p class="alert alert-danger" *ngIf="hasErrors('identifier', 'required')">
+        Identifier is required
+      </p>
+      <p class="alert alert-danger" *ngIf="hasErrors('identifier', 'minlength')">
+        Min length is {{ addForm.get('identifier').errors.minlength.requiredLength }} characters
+      </p>
+    </div>
+
+    <div class="d-flex flex-column">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" formControlName="name">
+      <p class="alert alert-danger" *ngIf="hasErrors('name', 'required')">
+        Name is required
+      </p>
+      <p class="alert alert-danger" *ngIf="hasErrors('name', 'minlength')">
+        Min length is {{ addForm.get('name').errors.minlength.requiredLength }} characters
+      </p>
+    </div>
+
+    <div class="d-flex flex-column">
+      <label for="surname">Surname</label>
+      <input type="text" class="form-control" formControlName="surname">
+      <p class="alert alert-danger" *ngIf="hasErrors('surname', 'required')">
+        Surname is required
+      </p>
+      <p class="alert alert-danger" *ngIf="hasErrors('surname', 'minlength')">
+        Min length is {{ addForm.get('surname').errors.minlength.requiredLength }} characters
+      </p>
+    </div>
+
+    <div class="d-flex flex-column">
+      <label for="gender">Gender</label>
+      <select id="gender" class="custom-select" formControlName="gender">
+        <option *ngFor="let g of gender | keyvalue" [ngValue]="g.value">
+          {{ g.value }}</option>
+      </select>
+      <p class="alert alert-danger" *ngIf="hasErrors('gender', 'required')">
+        Gender is required
+      </p>
+    </div>
+
+    <div class="d-flex flex-column">
+      <label for="birthDate">Birth Date</label>
+      <input type="date" class="form-control" formControlName="birthDate">
+      <p class="alert alert-danger" *ngIf="hasErrors('birthDate', 'required')">
+        Birth date is required
+      </p>
+    </div>
+
+    <div class="d-flex flex-column">
+      <label for="address">Address</label>
+      <input type="text" class="form-control" formControlName="address">
+    </div>
+
+    <div class="d-flex flex-column">
+      <label for="phone">Phone</label>
+      <input type="text" class="form-control" formControlName="phone">
+    </div>
+
+    <div class="d-flex flex-column">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" formControlName="email">
+      <p class="alert alert-danger" *ngIf="hasErrors('email', 'email')">
+        Email is in invalid format
+      </p>
+    </div>
+
+    <div class="d-flex flex-column">
+      <label for="qualification">Qualification</label>
+      <select id="qualification" class="custom-select" formControlName="qualification">
+        <option *ngFor="let qualification of qualifications | keyvalue" [ngValue]="qualification.value">
+          {{ qualification.value }}</option>
+      </select>
+      <p class="alert alert-danger" *ngIf="hasErrors('qualification', 'required')">
+        Qualification is required
+      </p>
+    </div>
+
+    <div class="d-flex flex-column">
+      <label for="organization">Organization</label>
+      <select id="organization" class="custom-select" formControlName="organization">
+        <option *ngFor="let organization of organizations" [ngValue]="organization.id">
+          {{ organization.id }} - {{ organization.identifier }} - {{ organization.name }}
+        </option>
+      </select>
+      <p class="alert alert-danger" *ngIf="hasErrors('organization', 'required')">
+        Organization is required
+      </p>
+    </div>
+
+    <div class="d-flex justify-content-around mt-3">
+      <button (click)="save()" class="btn btn-primary" [disabled]="addForm.invalid">Save</button>
+      <button routerLink="/practitioner" class="btn btn-secondary">Cancel</button>
+    </div>
+  </form>
+  </div>
+

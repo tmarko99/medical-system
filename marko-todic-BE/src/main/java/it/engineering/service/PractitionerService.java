@@ -9,7 +9,9 @@ public interface PractitionerService {
     PagedResponse<PractitionerSimpleDto> findAll(int pageNumber, int pageSize, String sortField, String sortDir);
     PractitionerSimpleDto save(PractitionerSimpleDto practitionerSimpleDto);
     PractitionerSimpleDto update(Integer id, PractitionerSimpleDto practitionerSimpleDto);
-    PractitionerFullDto findById(Integer id);
+    PractitionerFullDto findByIdView(Integer id);
+
+    PractitionerSimpleDto findByIdSimple(Integer id);
 
     ApiResponse delete(Integer id);
 }

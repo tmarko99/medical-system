@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { PageNotFoundComponent } from 'src/app/pages/page-not-found/page-not-found.component';
 import { OrganizationAddComponent } from './pages/organization-add/organization-add.component';
 import { OrganizationDetailsComponent } from './pages/organization-details/organization-details.component';
 import { OrganizationEditComponent } from './pages/organization-edit/organization-edit.component';
@@ -10,7 +11,8 @@ const routes: Routes = [
   { path: 'organization-list', component: OrganizationListComponent },
   { path: 'organization-add', component: OrganizationAddComponent },
   { path: 'organization-edit/:id', component: OrganizationEditComponent },
-  { path: 'organization-details/:id', component: OrganizationDetailsComponent }
+  { path: 'organization-details/:id', component: OrganizationDetailsComponent },
+  { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({

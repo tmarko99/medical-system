@@ -1,0 +1,46 @@
+<div class="container">
+  <h1>List of practitioners</h1>
+
+  <div class="d-flex mb-4">
+    <button class="btn btn-outline-warning mr-3" routerLink="">Home</button>
+    <button class="btn btn-outline-info" routerLink="/practitioner/practitioner-add">Add Practitioner</button>
+  </div>
+</div>
+
+
+<table class="table table-striped mx-auto col-lg-11 col-md-6">
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Identifier</th>
+    <th>Active</th>
+    <th>Name</th>
+    <th>Surname</th>
+    <th>Gender</th>
+    <th>Phone</th>
+    <th>Email</th>
+    <th>Qualification</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let practitioner of practitioners">
+    <td>{{ practitioner.id }}</td>
+    <td>{{ practitioner.identifier }}</td>
+    <td>{{ practitioner.active }}</td>
+    <td>{{ practitioner.name }}</td>
+    <td>{{ practitioner.surname }}</td>
+    <td>
+      <span [ngClass]="getBadgeColor( practitioner.gender)">{{ practitioner.gender }}</span>
+    </td>
+    <td>{{ practitioner.phone }}</td>
+    <td>{{ practitioner.email }}</td>
+    <td>{{ practitioner.qualification }}</td>
+    <td>
+      <button [routerLink]="['/practitioner/practitioner-details/', practitioner.id]" class="btn btn-outline-warning mr-3">View</button>
+      <button [routerLink]="['/practitioner/practitioner-edit/', practitioner.id]" class="btn btn-outline-success mr-3">Edit</button>
+      <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(practitioner)">Delete</button>
+    </td>
+  </tr>
+  </tbody>
+</table>

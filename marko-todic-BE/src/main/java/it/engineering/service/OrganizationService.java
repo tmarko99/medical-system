@@ -1,15 +1,14 @@
 package it.engineering.service;
 
-import it.engineering.dto.ApiResponse;
-import it.engineering.dto.OrganizationDto;
-import it.engineering.dto.OrganizationFullDto;
-import it.engineering.dto.PagedResponse;
+import it.engineering.dto.*;
+import it.engineering.entity.OrganizationType;
 
 import java.util.List;
 
 public interface OrganizationService {
     OrganizationDto save(OrganizationDto organizationDto);
-    PagedResponse<OrganizationDto> findAll(int pageNumber, int pageSize, String sortField, String sortDir);
+    PagedResponse<OrganizationDto> findAll(OrganizationType filter, int pageNumber, int pageSize, String sortField, String sortDir);
+    List<OrganizationIdentifierNameDto> findAllSimple();
     OrganizationDto update(Integer id, OrganizationDto newOrganization);
     OrganizationFullDto findByIdView(Integer id);
     OrganizationDto findByIdEdit(Integer id);

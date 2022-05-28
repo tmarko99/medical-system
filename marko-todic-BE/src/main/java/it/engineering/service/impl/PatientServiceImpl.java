@@ -11,7 +11,6 @@ import it.engineering.mapper.PatientMapper;
 import it.engineering.repository.OrganizationRepository;
 import it.engineering.repository.PatientRepository;
 import it.engineering.repository.PractitionerRepository;
-import it.engineering.service.OrganizationService;
 import it.engineering.service.PatientService;
 import it.engineering.service.PractitionerService;
 import org.mapstruct.factory.Mappers;
@@ -72,7 +71,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientSimpleDto save(PatientSimpleDto patientSimpleDto) {
-        PractitionerFullDto practitioner = practitionerService.findById(patientSimpleDto.getPractitioner());
+        PractitionerFullDto practitioner = practitionerService.findByIdView(patientSimpleDto.getPractitioner());
 
 //        OrganizationDto organization = organizationService.findById(patientSimpleDto.getOrganization());
 

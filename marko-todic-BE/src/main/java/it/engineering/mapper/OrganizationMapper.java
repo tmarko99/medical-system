@@ -2,6 +2,7 @@ package it.engineering.mapper;
 
 import it.engineering.dto.OrganizationDto;
 import it.engineering.dto.OrganizationFullDto;
+import it.engineering.dto.OrganizationIdentifierNameDto;
 import it.engineering.entity.Organization;
 import it.engineering.entity.OrganizationType;
 import it.engineering.entity.Practitioner;
@@ -23,6 +24,8 @@ public interface OrganizationMapper {
     @Mapping(target = "numberOfPatients", expression = "java(organization.getPatients() != null ? organization.getPatients().size() : 0)")
     @Mapping(target = "numberOfExaminations", expression = "java(organization.getExaminations() != null ? organization.getExaminations().size() : 0)")
     OrganizationDto toDto(Organization organization);
+
+    OrganizationIdentifierNameDto toSimpleDto(Organization organization);
 
 
     @Mapping(target = "examinations.organization", ignore = true)

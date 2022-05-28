@@ -69,8 +69,6 @@
       </p>
     </div>
 
-    {{ editForm.value | json }}
-
     <div class="d-flex justify-content-around mt-3">
       <button (click)="update()" class="btn btn-primary" [disabled]="editForm.invalid">Update</button>
       <button routerLink="/organization" class="btn btn-secondary">Cancel</button>

@@ -1,16 +1,15 @@
 package it.engineering.service.impl;
 
-import it.engineering.dto.ApiResponse;
-import it.engineering.dto.OrganizationDto;
-import it.engineering.dto.OrganizationFullDto;
-import it.engineering.dto.PagedResponse;
-import it.engineering.entity.Organization;
-import it.engineering.entity.Status;
+import it.engineering.dto.*;
+import it.engineering.entity.*;
 import it.engineering.exception.BadRequestException;
 import it.engineering.exception.ResourceNotFoundException;
 import it.engineering.mapper.OrganizationMapper;
 import it.engineering.repository.OrganizationRepository;
+import it.engineering.repository.PatientRepository;
+import it.engineering.repository.PractitionerRepository;
 import it.engineering.service.OrganizationService;
+import it.engineering.service.PractitionerService;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,12 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private PractitionerRepository practitionerRepository;
+
+    @Autowired
+    private PatientRepository patientRepository;
 
     private final OrganizationMapper organizationMapper = Mappers.getMapper(OrganizationMapper.class);
 
@@ -51,14 +56,21 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public PagedResponse<OrganizationDto> findAll(int pageNumber, int pageSize, String sortField, String sortDir) {
+    public PagedResponse<OrganizationDto> findAll(OrganizationType filter, int pageNumber, int pageSize, String sortField, String sortDir) {
         Sort sort = Sort.by(sortField);
 
         sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? sort.ascending() : sort.descending();
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        Page<Organization> organizations = organizationRepository.findAll(pageable);
+        Page<Organization> organizations;
+
+        if(filter == null){
+            organizations = organizationRepository.findAll(pageable);
+        }
+        else{
+            organizations = organizationRepository.findAll(filter, pageable);
+        }
 
         List<Organization> organizationList = organizations.getContent();
 
@@ -76,6 +88,13 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         return pagedResponse;
 
+    }
+
+    @Override
+    public List<OrganizationIdentifierNameDto> findAllSimple() {
+        return organizationRepository.findAll()
+                .stream().map(organization -> organizationMapper.toSimpleDto(organization))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -101,11 +120,11 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         List<Organization> organizations = organizationRepository.findAll();
 
-        long count = organizations.stream().filter(org -> org.getIdentifier().equalsIgnoreCase(newOrganization.getIdentifier()) &&
+        long count = organizations.stream().filter(org -> org.getIdentifier().equalsIgnoreCase(newOrganization.getIdentifier()) ||
                 org.getName().equalsIgnoreCase(newOrganization.getName())).count();
 
 
-        if(count > 0){
+        if(count > 1){
             ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Duplicate entry");
             throw new BadRequestException(apiResponse);
         }
@@ -133,17 +152,21 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .filter(examination -> examination.getStatus().equals(Status.IN_PROGRESS)).count();
 
         if(numberOfExaminations > 0){
-            ApiResponse apiResponse =
-                    new ApiResponse(Boolean.FALSE, "Cannot delete organization because there are examinations in the RUNNING state");
+            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Cannot delete organization because there are examinations in the RUNNING state");
             throw new BadRequestException(apiResponse);
         }
+
+        for(Practitioner practitioner : organization.getPractitioners()){
+            practitionerRepository.delete(practitioner.getId());
+        }
+
+        for(Patient patient : organization.getPatients()){
+            patientRepository.delete(patient.getId());
+        }
+
 
         organizationRepository.delete(id);
 
         return new ApiResponse(Boolean.TRUE, "Organization with id: " + id + " deleted successfully");
-
-
     }
-
-
 }

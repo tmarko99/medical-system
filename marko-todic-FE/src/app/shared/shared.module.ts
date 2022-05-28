@@ -4,18 +4,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { HeaderComponent } from './components/header/header.component';
-import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { SortableHeaderDirective } from './directives/sortable-header.directive';
 
 @NgModule({
-  declarations: [HeaderComponent, ConfirmDialogComponent],
+  declarations: [HeaderComponent, ConfirmDialogComponent, SortableHeaderDirective],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
     HttpClientModule,
-    NgbModalModule
+    NgbModalModule,
+    NgbPaginationModule
   ],
   exports: [
     CommonModule,
@@ -24,7 +26,9 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     RouterModule,
     HttpClientModule,
     HeaderComponent,
-    NgbModalModule
+    SortableHeaderDirective,
+    NgbModalModule,
+    NgbPaginationModule
   ]
 })
 export class SharedModule { }

@@ -57,11 +57,19 @@ public class PractitionerServiceImpl implements PractitionerService {
     }
 
     @Override
-    public PractitionerFullDto findById(Integer id) {
+    public PractitionerFullDto findByIdView(Integer id) {
         Practitioner practitioner = practitionerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Practitioner", "id", id));
 
         return practitionerMapper.toFullDto(practitioner);
+    }
+
+    @Override
+    public PractitionerSimpleDto findByIdSimple(Integer id) {
+        Practitioner practitioner = practitionerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Practitioner", "id", id));
+
+        return practitionerMapper.toDto(practitioner);
     }
 
     @Override
@@ -79,13 +87,10 @@ public class PractitionerServiceImpl implements PractitionerService {
         List<Practitioner> practitioners = practitionerRepository.findAll();
 
         long count = practitioners.stream().filter(pract -> pract.getIdentifier()
-                .equalsIgnoreCase(practitionerSimpleDto.getIdentifier()) &&
-                pract.getName().equalsIgnoreCase(practitionerSimpleDto.getName()))
-                .count();
+                .equalsIgnoreCase(practitionerSimpleDto.getIdentifier())).count();
 
-
-        if(count > 0){
-            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Already exists entry with same identifier and name");
+        if(count > 1){
+            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Already exists entry with same identifier");
             throw new BadRequestException(apiResponse);
         }
 
