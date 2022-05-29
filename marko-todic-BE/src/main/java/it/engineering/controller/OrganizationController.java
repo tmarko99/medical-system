@@ -20,7 +20,7 @@ public class OrganizationController {
     private  OrganizationService organizationService;
 
     @GetMapping
-    public PagedResponse findAll(@RequestParam(value = "filter", required = false) OrganizationType filter,
+    public PagedResponse findAll(@RequestParam(value = "filter", required = false) String filter,
                                  @RequestParam(value = "pageNumber", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNumber,
                                  @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                  @RequestParam(value = "sortField", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortField,

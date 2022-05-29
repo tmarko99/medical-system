@@ -1,16 +1,14 @@
 package it.engineering.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import it.engineering.entity.*;
+import it.engineering.entity.Gender;
+import it.engineering.entity.MaritalStatus;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.List;
 
-public class PractitionerFullDto {
+public class PatientFullDto {
     private Integer id;
     @NotNull
     @NotEmpty
@@ -34,17 +32,24 @@ public class PractitionerFullDto {
     private Date birthDate;
     private String address;
     private String phone;
+    @Email
     private String email;
+    private Boolean deceased = false;
     @NotNull
-    private Qualification qualification;
-    private List<PatientSimpleDto> patients;
-    private List<ExaminationDto> examinations;
-    private Organization organization;
+    private MaritalStatus maritalStatus;
 
-    public PractitionerFullDto() {
+    private PractitionerSimpleDto practitioner;
+
+    private List<ExaminationDto> examinations;
+
+    private OrganizationDto organization;
+
+
+
+    public PatientFullDto() {
     }
 
-    public PractitionerFullDto(Integer id, String identifier, Boolean active, String name, String surname, Gender gender, Date birthDate, String address, String phone, String email, Qualification qualification, List<PatientSimpleDto> patients, List<ExaminationDto> examinations, Organization organization) {
+    public PatientFullDto(Integer id, String identifier, Boolean active, String name, String surname, Gender gender, Date birthDate, String address, String phone, String email, Boolean deceased, MaritalStatus maritalStatus, PractitionerSimpleDto practitioner, List<ExaminationDto> examinations, OrganizationDto organization) {
         this.id = id;
         this.identifier = identifier;
         this.active = active;
@@ -55,8 +60,9 @@ public class PractitionerFullDto {
         this.address = address;
         this.phone = phone;
         this.email = email;
-        this.qualification = qualification;
-        this.patients = patients;
+        this.deceased = deceased;
+        this.maritalStatus = maritalStatus;
+        this.practitioner = practitioner;
         this.examinations = examinations;
         this.organization = organization;
     }
@@ -141,20 +147,28 @@ public class PractitionerFullDto {
         this.email = email;
     }
 
-    public Qualification getQualification() {
-        return qualification;
+    public Boolean getDeceased() {
+        return deceased;
     }
 
-    public void setQualification(Qualification qualification) {
-        this.qualification = qualification;
+    public void setDeceased(Boolean deceased) {
+        this.deceased = deceased;
     }
 
-    public List<PatientSimpleDto> getPatients() {
-        return patients;
+    public MaritalStatus getMaritalStatus() {
+        return maritalStatus;
     }
 
-    public void setPatients(List<PatientSimpleDto> patients) {
-        this.patients = patients;
+    public void setMaritalStatus(MaritalStatus maritalStatus) {
+        this.maritalStatus = maritalStatus;
+    }
+
+    public PractitionerSimpleDto getPractitioner() {
+        return practitioner;
+    }
+
+    public void setPractitioner(PractitionerSimpleDto practitioner) {
+        this.practitioner = practitioner;
     }
 
     public List<ExaminationDto> getExaminations() {
@@ -165,11 +179,11 @@ public class PractitionerFullDto {
         this.examinations = examinations;
     }
 
-    public Organization getOrganization() {
+    public OrganizationDto getOrganization() {
         return organization;
     }
 
-    public void setOrganization(Organization organization) {
+    public void setOrganization(OrganizationDto organization) {
         this.organization = organization;
     }
 }

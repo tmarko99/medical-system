@@ -1,13 +1,11 @@
 package it.engineering.service.impl;
 
-import it.engineering.dto.ApiResponse;
-import it.engineering.dto.PagedResponse;
-import it.engineering.dto.PatientSimpleDto;
-import it.engineering.dto.PractitionerFullDto;
+import it.engineering.dto.*;
 import it.engineering.entity.*;
 import it.engineering.exception.BadRequestException;
 import it.engineering.exception.ResourceNotFoundException;
 import it.engineering.mapper.PatientMapper;
+import it.engineering.repository.ExaminationRepository;
 import it.engineering.repository.OrganizationRepository;
 import it.engineering.repository.PatientRepository;
 import it.engineering.repository.PractitionerRepository;
@@ -21,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,18 +38,31 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private OrganizationRepository organizationRepository;
 
+    @Autowired
+    private ExaminationRepository examinationRepository;
+
     private final PatientMapper patientMapper = Mappers.getMapper(PatientMapper.class);
 
 
     @Override
-    public PagedResponse<PatientSimpleDto> findAll(int pageNumber, int pageSize, String sortField, String sortDir) {
+    public PagedResponse<PatientSimpleDto> findAll(String filter, int pageNumber, int pageSize, String sortField, String sortDir) {
         Sort sort = Sort.by(sortField);
 
         sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? sort.ascending() : sort.descending();
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        Page<Patient> patients = patientRepository.findAll(pageable);
+        Page<Patient> patients;
+
+        if(Arrays.stream(MaritalStatus.values()).map(Enum::name).collect(Collectors.toList()).contains(filter)){
+            patients = patientRepository.findByMaritalStatus(MaritalStatus.fromString(filter), pageable);
+        }
+        else if(filter != null){
+            patients = patientRepository.findAllByName(filter, pageable);
+        }
+        else{
+            patients = patientRepository.findAll(pageable);
+        }
 
         List<Patient> patientList = patients.getContent();
 
@@ -67,6 +79,22 @@ public class PatientServiceImpl implements PatientService {
         pagedResponse.setLast(patients.isLast());
 
         return pagedResponse;
+    }
+
+    @Override
+    public PatientSimpleDto findById(Integer id) {
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
+
+        return patientMapper.toDto(patient);
+    }
+
+    @Override
+    public PatientFullDto findByIdView(Integer id) {
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
+
+        return patientMapper.toFullDto(patient);
     }
 
     @Override
@@ -87,7 +115,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientSimpleDto update(Integer id, PatientSimpleDto patientSimpleDto) {
+    public PatientSimpleDto update(Integer id, PatientSimpleDto patientSimpleDto){
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
 
@@ -100,15 +128,13 @@ public class PatientServiceImpl implements PatientService {
 
         List<Patient> patients = patientRepository.findAll();
 
-        // number of found patients who have the same identifier and name as an inserted value
-        long count = patients.stream().filter(pat -> pat.getIdentifier()
-                        .equalsIgnoreCase(patientSimpleDto.getIdentifier()) &&
-                        pat.getName().equalsIgnoreCase(patientSimpleDto.getName()))
+        // number of found patients who have the same identifier as an inserted value
+        long count = patients.stream()
+                .filter(pat -> pat.getIdentifier().equalsIgnoreCase(patientSimpleDto.getIdentifier()))
                 .count();
 
-
-        if(count > 0){
-            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Already exists entry with same identifier and name");
+        if(count > 1){
+            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Already exists entry with same identifier");
             throw new BadRequestException(apiResponse);
         }
 
@@ -148,6 +174,10 @@ public class PatientServiceImpl implements PatientService {
             ApiResponse apiResponse =
                     new ApiResponse(Boolean.FALSE, "Cannot delete patient because there are examinations in the RUNNING state");
             throw new BadRequestException(apiResponse);
+        }
+
+        for(Examination examination : patient.getExaminations()){
+            examinationRepository.delete(examination.getId());
         }
 
         practitionerRepository.delete(id);

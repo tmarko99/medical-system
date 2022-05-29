@@ -9,6 +9,9 @@ const routes: Routes = [
   { path: 'practitioner',
     loadChildren: () => import('./features/practitioner/practitioner.module').then((m) => m.PractitionerModule)
   },
+  { path: 'patient',
+    loadChildren: () => import('./features/patient/patient.module').then((m) => m.PatientModule)
+  },
   { path: '**', component: PageNotFoundComponent }
 ];
 

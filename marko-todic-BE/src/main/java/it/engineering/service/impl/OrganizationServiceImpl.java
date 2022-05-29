@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.ReadOnlyFileSystemException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public PagedResponse<OrganizationDto> findAll(OrganizationType filter, int pageNumber, int pageSize, String sortField, String sortDir) {
+    public PagedResponse<OrganizationDto> findAll(String filter, int pageNumber, int pageSize, String sortField, String sortDir) {
         Sort sort = Sort.by(sortField);
 
         sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? sort.ascending() : sort.descending();
@@ -65,11 +66,14 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         Page<Organization> organizations;
 
-        if(filter == null){
-            organizations = organizationRepository.findAll(pageable);
+        if(Arrays.stream(OrganizationType.values()).map(Enum::name).collect(Collectors.toList()).contains(filter)){
+            organizations = organizationRepository.findAllByType(OrganizationType.fromString(filter), pageable);
+        }
+        else if(filter != null){
+            organizations = organizationRepository.findAllByNameContaining(filter, pageable);
         }
         else{
-            organizations = organizationRepository.findAll(filter, pageable);
+            organizations = organizationRepository.findAll(pageable);
         }
 
         List<Organization> organizationList = organizations.getContent();
@@ -163,7 +167,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         for(Patient patient : organization.getPatients()){
             patientRepository.delete(patient.getId());
         }
-
 
         organizationRepository.delete(id);
 

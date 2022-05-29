@@ -1,14 +1,11 @@
 package it.engineering.service.impl;
 
-import it.engineering.dto.ApiResponse;
-import it.engineering.dto.PagedResponse;
-import it.engineering.dto.PractitionerFullDto;
-import it.engineering.dto.PractitionerSimpleDto;
-import it.engineering.entity.Practitioner;
-import it.engineering.entity.Status;
+import it.engineering.dto.*;
+import it.engineering.entity.*;
 import it.engineering.exception.BadRequestException;
 import it.engineering.exception.ResourceNotFoundException;
 import it.engineering.mapper.PractitionerMapper;
+import it.engineering.repository.PatientRepository;
 import it.engineering.repository.PractitionerRepository;
 import it.engineering.service.PractitionerService;
 import org.mapstruct.factory.Mappers;
@@ -19,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EnumType;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,17 +26,33 @@ public class PractitionerServiceImpl implements PractitionerService {
     @Autowired
     private PractitionerRepository practitionerRepository;
 
+    @Autowired
+    private PatientRepository patientRepository;
+
     private final PractitionerMapper practitionerMapper = Mappers.getMapper(PractitionerMapper.class);
 
     @Override
-    public PagedResponse<PractitionerSimpleDto> findAll(int pageNumber, int pageSize, String sortField, String sortDir) {
+    public PagedResponse<PractitionerSimpleDto> findAll(String filter, int pageNumber, int pageSize, String sortField, String sortDir) {
         Sort sort = Sort.by(sortField);
 
         sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? sort.ascending() : sort.descending();
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        Page<Practitioner> practitioners = practitionerRepository.findAll(pageable);
+        Page<Practitioner> practitioners;
+
+        if(Arrays.stream(Gender.values()).map(Enum::name).collect(Collectors.toList()).contains(filter)){
+            practitioners = practitionerRepository.findAllByGender(Gender.fromString(filter), pageable);
+        }
+        else if(Arrays.stream(Qualification.values()).map(Enum::name).collect(Collectors.toList()).contains(filter)){
+            practitioners = practitionerRepository.findAllByQualification(Qualification.fromString(filter), pageable);
+        }
+        else if(filter != null){
+            practitioners = practitionerRepository.findAllByNameContainingAndSurnameContaining(filter, pageable);
+        }
+        else{
+            practitioners = practitionerRepository.findAll(pageable);
+        }
 
         List<Practitioner> practitionerList = practitioners.getContent();
 
@@ -57,6 +72,13 @@ public class PractitionerServiceImpl implements PractitionerService {
     }
 
     @Override
+    public List<PractitionerIdentifierNameDto> findAllSimple() {
+        return practitionerRepository.findAll().stream()
+                .map(practitioner -> practitionerMapper.toSimpleDto(practitioner))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public PractitionerFullDto findByIdView(Integer id) {
         Practitioner practitioner = practitionerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Practitioner", "id", id));
@@ -70,6 +92,13 @@ public class PractitionerServiceImpl implements PractitionerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Practitioner", "id", id));
 
         return practitionerMapper.toDto(practitioner);
+    }
+
+    @Override
+    public List<PractitionerIdentifierNameDto> findByOrganization(Integer id) {
+        return practitionerRepository.findAllByOrganizationId(id)
+                .stream().map(practitioner -> practitionerMapper.toSimpleDto(practitioner))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -123,6 +152,10 @@ public class PractitionerServiceImpl implements PractitionerService {
             ApiResponse apiResponse =
                     new ApiResponse(Boolean.FALSE, "Cannot delete practitioner because there are examinations in the RUNNING state");
             throw new BadRequestException(apiResponse);
+        }
+
+        for (Patient patient : practitioner.getPatients()){
+            this.patientRepository.delete(patient.getId());
         }
 
         practitionerRepository.delete(id);

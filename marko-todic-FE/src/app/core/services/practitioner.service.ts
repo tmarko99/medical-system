@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { PageDto } from '../models/page.dto';
 import { Practitioner } from '../models/practitioner';
@@ -12,12 +13,20 @@ export class PractitionerService {
 
   constructor(private httpClient: HttpClient) { }
 
-  findAll() {
-    return this.httpClient.get<PageDto<Practitioner>>(`${environment.serverUrl}/api/practitioner`);
+  findAll(filter: string, page: number, size: number, sortField: string, sortDir: string) {
+    return this.httpClient.get<PageDto<Practitioner>>(`${environment.serverUrl}/api/practitioner?filter=${filter}&pageNumber=${page}&pageSize=${size}&sortField=${sortField}&sortDir=${sortDir}`);
+  }
+
+  findAllSimple(): Observable<Practitioner[]>{
+    return this.httpClient.get<Practitioner[]>(`${environment.serverUrl}/api/practitioner/findAll`);
   }
 
   findById(id: number) {
     return this.httpClient.get<Practitioner>(`${environment.serverUrl}/api/practitioner/${id}`);
+  }
+
+  findByOrganizationId(id: number): Observable<Practitioner[]> {
+    return this.httpClient.get<Practitioner[]>(`${environment.serverUrl}/api/practitioner/findByOrganization/${id}`);
   }
 
   findByIdView(id: number) {

@@ -15,6 +15,20 @@
       </p>
     </div>
 
+    <fieldset class="d-flex flex-column mt-3">
+      <div class="row">
+        <legend class="col-form-label col-sm-2 pt-0">Active status</legend>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" formControlName="active" type="radio" id="inlineRadio1" [value]="true">
+          <label class="form-check-label" for="inlineRadio1">Active</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" formControlName="active" type="radio" id="inlineRadio2" [value]="false">
+          <label class="form-check-label" for="inlineRadio2">Inactive</label>
+        </div>
+      </div>
+    </fieldset>
+
     <div class="d-flex flex-column">
       <label for="name">Name</label>
       <input type="text" class="form-control" formControlName="name">

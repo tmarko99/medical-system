@@ -10,10 +10,9 @@
 <div class="row">
   <div class="d-flex mb-4 col-lg-4 col-md-6 mx-auto">
     <input type="text" class="form-control" ngModel matInput placeholder="Search" name="search" search #searchInput="ngModel"
-      [(ngModel)]="searchValue" (keyup)="search()">
+      [(ngModel)]="searchValue" (keyup)="filter()">
   </div>
   <div class="d-flex mb-4 col-lg-4 col-md-6 mx-2">
-    <!-- <label class="mx-2">Organization type:</label> -->
     <select class="custom-select col-lg-5" [(ngModel)]="organizationValue" ngModel (change)="filter()">
       <option value="">Any organization</option>
       <option *ngFor="let organizationType of organizationTypes | keyvalue" [value]="organizationType.key">
@@ -29,12 +28,12 @@
     <tr>
       <th sortable="id" (sort)="onSort($event)" scope="col">Id</th>
       <th sortable="identifier" (sort)="onSort($event)" scope="col">Identifier</th>
-      <th sortable="active" (sort)="onSort($event)" scope="col">Active</th>
+      <th>Active</th>
       <th sortable="type" (sort)="onSort($event)" scope="col">Type</th>
       <th sortable="name" (sort)="onSort($event)" scope="col">Name</th>
       <th sortable="address" (sort)="onSort($event)" scope="col">Address</th>
-      <th sortable="phone" (sort)="onSort($event)" scope="col">Phone</th>
-      <th sortable="email" (sort)="onSort($event)" scope="col">Email</th>
+      <th>Phone</th>
+      <th>Email</th>
       <th>Actions</th>
     </tr>
     </thead>

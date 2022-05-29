@@ -1,9 +1,9 @@
 <div class="container">
-  <h1>List of practitioners</h1>
+  <h1>List of patients</h1>
 
   <div class="d-flex mb-4">
     <button class="btn btn-outline-warning mr-3" routerLink="">Home</button>
-    <button class="btn btn-outline-info" routerLink="/practitioner/practitioner-add">Add Practitioner</button>
+    <button class="btn btn-outline-info" routerLink="/patient/patient-add">Add patient</button>
   </div>
 </div>
 
@@ -14,25 +14,17 @@
         [(ngModel)]="searchValue" (keyup)="search()">
     </div>
     <div class="d-flex justify-content-center col-lg-5 mb-4">
-      <select class="custom-select col-lg-4" [(ngModel)]="genderValue" ngModel (change)="search()">
+      <select class="custom-select col-lg-4" [(ngModel)]="maritalStatusValue" ngModel (change)="search()">
         <option value="">Any gender</option>
-        <option *ngFor="let g of gender | keyvalue" [value]="g.key">
-          {{ g.value }}
+        <option *ngFor="let ms of maritalStatus | keyvalue" [value]="ms.key">
+          {{ ms.value }}
         </option>
       </select>
     </div>
-    <div class="d-flex mb-4 justify-content-center col-lg-5">
-      <select class="custom-select col-lg-5" [(ngModel)]="qualificationValue" ngModel (change)="search()">
-        <option value="">Any qualification</option>
-        <option *ngFor="let qualification of qualifications | keyvalue" [value]="qualification.key">
-          {{ qualification.value }}
-        </option>
-      </select>
-  </div>
 </div>
 </div>
 
-<ng-container *ngIf="practitioners.length > 0; else noResults">
+<ng-container *ngIf="patients.length > 0; else noResults">
   <table class="table table-striped mx-auto col-lg-11 col-md-6">
     <thead>
     <tr>
@@ -44,27 +36,29 @@
       <th sortable="gender" (sort)="onSort($event)" scope="col">Gender</th>
       <th>Phone</th>
       <th>Email</th>
-      <th sortable="qualification" (sort)="onSort($event)" scope="col">Qualification</th>
+      <th sortable="maritalStatus" (sort)="onSort($event)" scope="col">Marital status</th>
       <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let practitioner of practitioners">
-      <td>{{ practitioner.id }}</td>
-      <td>{{ practitioner.identifier }}</td>
-      <td>{{ practitioner.active }}</td>
-      <td>{{ practitioner.name }}</td>
-      <td>{{ practitioner.surname }}</td>
+    <tr *ngFor="let patient of patients">
+      <td>{{ patient.id }}</td>
+      <td>{{ patient.identifier }}</td>
+      <td>{{ patient.active }}</td>
+      <td>{{ patient.name }}</td>
+      <td>{{ patient.surname }}</td>
       <td>
-        <span [ngClass]="getBadgeColor( practitioner.gender)">{{ practitioner.gender }}</span>
+        <span [ngClass]="getBadgeColorGender(patient.gender)">{{ patient.gender }}</span>
       </td>
-      <td>{{ practitioner.phone }}</td>
-      <td>{{ practitioner.email }}</td>
-      <td>{{ practitioner.qualification }}</td>
+      <td>{{ patient.phone }}</td>
+      <td>{{ patient.email }}</td>
       <td>
-        <button [routerLink]="['/practitioner/practitioner-details/', practitioner.id]" class="btn btn-outline-warning mr-3">View</button>
-        <button [routerLink]="['/practitioner/practitioner-edit/', practitioner.id]" class="btn btn-outline-success mr-3">Edit</button>
-        <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(practitioner)">Delete</button>
+        <span [ngClass]="getBadgeColorMaritalStatus(patient.maritalStatus)">{{ patient.maritalStatus }}</span>
+      </td>
+      <td>
+        <button [routerLink]="['/patient/patient-details/', patient.id]" class="btn btn-outline-warning mr-3">View</button>
+        <button [routerLink]="['/patient/patient-edit/', patient.id]" class="btn btn-outline-success mr-3">Edit</button>
+        <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(patient)">Delete</button>
       </td>
     </tr>
     </tbody>
@@ -85,7 +79,6 @@
     </ngb-pagination>
   </div>
 </div>
-
 
 <ng-template #noResults>
   <h1 class="text-center">No results to show</h1>

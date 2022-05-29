@@ -1,10 +1,12 @@
 package it.engineering.dto;
 
+import it.engineering.entity.Qualification;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class OrganizationIdentifierNameDto {
+public class PractitionerIdentifierNameDto {
     private Integer id;
     @NotNull
     @NotEmpty
@@ -14,13 +16,17 @@ public class OrganizationIdentifierNameDto {
     @Size(min = 5, message = "Minimal number of characters is 5")
     private String name;
 
-    public OrganizationIdentifierNameDto() {
+    @NotNull
+    private Qualification qualification;
+
+    public PractitionerIdentifierNameDto() {
     }
 
-    public OrganizationIdentifierNameDto(Integer id, String identifier, String name) {
+    public PractitionerIdentifierNameDto(Integer id, String identifier, String name, Qualification qualification) {
         this.id = id;
         this.identifier = identifier;
         this.name = name;
+        this.qualification = qualification;
     }
 
     public Integer getId() {
@@ -45,5 +51,13 @@ public class OrganizationIdentifierNameDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Qualification getQualification() {
+        return qualification;
+    }
+
+    public void setQualification(Qualification qualification) {
+        this.qualification = qualification;
     }
 }

@@ -14,18 +14,16 @@ export class ConfirmDialogComponent implements OnInit {
 
   returnFunction?: Function;
 
-  constructor(public modal: NgbActiveModal, private modalService: NgbModal) { }
+  constructor(public modal: NgbActiveModal) { }
 
   ngOnInit(): void {
   }
 
   onCancel() {
-    // this.returnFunction('cancel');
     this.modal.close('Cancel');
   }
 
   onConfirm() {
-    // this.returnFunction('confirm');
     this.modal.close('Ok');
   }
 

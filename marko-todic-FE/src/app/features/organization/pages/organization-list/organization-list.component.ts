@@ -16,7 +16,7 @@ import { SortableHeaderDirective, SortEvent } from 'src/app/shared/directives/so
 export class OrganizationListComponent implements OnInit {
 
   organizations: Organization[] = [];
-  organizationsFilter: Organization[] = [];
+
   searchValue: string = '';
   organizationValue: string = '';
   organizationTypes = OrganizationType;
@@ -47,10 +47,10 @@ export class OrganizationListComponent implements OnInit {
   }
 
   findAll(){
-    this.organizationService.findAll(this.organizationValue, this.currentPage - 1, this.pageSize, this.sortField, this.sortDir)
+    const filter = this.searchValue === '' ? this.organizationValue : this.searchValue;
+    this.organizationService.findAll(filter, this.currentPage - 1, this.pageSize, this.sortField, this.sortDir)
     .subscribe(organizations => {
       this.organizations = organizations.content;
-      this.organizationsFilter = organizations.content;
       this.totalItems = organizations.totalElements;
       this.pageSize = organizations.pageSize;
     })
@@ -85,24 +85,10 @@ export class OrganizationListComponent implements OnInit {
       }
     })
     this.findAll();
-    console.log('sort event:', sortEvent);
   }
 
   onPageSizeChange() {
     this.findAll();
-  }
-
-
-  search(){
-    let arr = this.organizationsFilter;
-
-    let search = this.searchValue.trim().toLowerCase();
-
-    if(search != ''){
-      arr = arr.filter((organization) => organization.name.toLowerCase().includes(search));
-    }
-
-    this.organizations = arr;
   }
 
   filter(){

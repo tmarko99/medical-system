@@ -1,9 +1,9 @@
 import { Gender } from "./gender";
+import { MaritalStatus } from "./maritalStatus";
 import { Organization } from "./organization";
-import { Patient } from "./patient";
-import { Qualification } from "./qualification";
+import { Practitioner } from "./practitioner";
 
-export interface PractitionerView {
+export interface PatientView {
   id: number;
   identifier: string;
   active: boolean;
@@ -14,8 +14,9 @@ export interface PractitionerView {
   address: string;
   phone: string;
   email: string;
-  qualification: Qualification;
-  patients: Patient[];
+  deceased: boolean;
+  maritalStatus: MaritalStatus;
+  practitioner: Practitioner;
   examinations: any[];
   organization: Organization;
 }

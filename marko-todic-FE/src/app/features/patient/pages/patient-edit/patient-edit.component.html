@@ -1,5 +1,10 @@
-<div class="d-flex flex-column mx-auto col-lg-8 col-md-6 p-3" *ngIf="addForm">
-  <form [formGroup]="addForm">
+<div class="d-flex flex-column mx-auto col-lg-8 col-md-6 p-3" *ngIf="editForm">
+  <form [formGroup]="editForm">
+    <div class="d-flex flex-column">
+      <label for="id">Id</label>
+      <input type="text" class="form-control" formControlName="id">
+    </div>
+
     <div class="d-flex flex-column">
       <label for="identifier">Identifier</label>
       <input type="text" class="form-control" formControlName="identifier">
@@ -7,7 +12,7 @@
         Identifier is required
       </p>
       <p class="alert alert-danger" *ngIf="hasErrors('identifier', 'minlength')">
-        Min length is {{ addForm.get('identifier').errors.minlength.requiredLength }} characters
+        Min length is {{ editForm.get('identifier').errors.minlength.requiredLength }} characters
       </p>
     </div>
 
@@ -32,7 +37,7 @@
         Name is required
       </p>
       <p class="alert alert-danger" *ngIf="hasErrors('name', 'minlength')">
-        Min length is {{ addForm.get('name').errors.minlength.requiredLength }} characters
+        Min length is {{ editForm.get('name').errors.minlength.requiredLength }} characters
       </p>
     </div>
 
@@ -43,14 +48,14 @@
         Surname is required
       </p>
       <p class="alert alert-danger" *ngIf="hasErrors('surname', 'minlength')">
-        Min length is {{ addForm.get('surname').errors.minlength.requiredLength }} characters
+        Min length is {{ editForm.get('surname').errors.minlength.requiredLength }} characters
       </p>
     </div>
 
     <div class="d-flex flex-column">
       <label for="gender">Gender</label>
       <select id="gender" class="custom-select" formControlName="gender">
-        <option *ngFor="let g of gender | keyvalue" [ngValue]="g.value">
+        <option *ngFor="let g of gender | keyvalue" [ngValue]="g.key">
           {{ g.value }}</option>
       </select>
       <p class="alert alert-danger" *ngIf="hasErrors('gender', 'required')">
@@ -84,20 +89,31 @@
       </p>
     </div>
 
-    <div class="d-flex flex-column">
-      <label for="qualification">Qualification</label>
-      <select id="qualification" class="custom-select" formControlName="qualification">
-        <option *ngFor="let qualification of qualifications | keyvalue" [ngValue]="qualification.value">
-          {{ qualification.value }}</option>
-      </select>
-      <p class="alert alert-danger" *ngIf="hasErrors('qualification', 'required')">
-        Qualification is required
-      </p>
-    </div>
+    <fieldset class="d-flex flex-column mt-3">
+      <div class="row">
+        <legend class="col-form-label col-sm-2 pt-0">Deceased</legend>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" formControlName="deceased" type="radio" id="inlineRadio1" [value]="true">
+          <label class="form-check-label" for="inlineRadio1">True</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" formControlName="deceased" type="radio" id="inlineRadio2" [value]="false">
+          <label class="form-check-label" for="inlineRadio2">False</label>
+        </div>
+      </div>
+    </fieldset>
 
     <div class="d-flex flex-column">
+      <label for="maritalStatus">Marital status</label>
+      <select id="maritalStatus" class="custom-select" formControlName="maritalStatus">
+        <option *ngFor="let ms of maritalStatus | keyvalue" [ngValue]="ms.key">
+          {{ ms.value }}</option>
+      </select>
+    </div>
+
+    <div class="d-flex flex-column" >
       <label for="organization">Organization</label>
-      <select id="organization" class="custom-select" formControlName="organization">
+      <select (change)="findByOrganizationId()" id="organization" [(ngModel)]="selectedOrganization" class="custom-select" formControlName="organization">
         <option *ngFor="let organization of organizations" [ngValue]="organization.id">
           {{ organization.id }} - {{ organization.identifier }} - {{ organization.name }}
         </option>
@@ -107,10 +123,30 @@
       </p>
     </div>
 
+    <div *ngIf="isSelected">
+      <ng-container *ngIf="practitioners.length > 0; else noResults">
+        <div class="d-flex flex-column">
+          <label for="practitioner">Practitioner</label>
+          <select id="practitioner" class="custom-select" formControlName="practitioner">
+            <option *ngFor="let practitioner of practitioners" [ngValue]="practitioner.id">
+              {{ practitioner.identifier }} - {{ practitioner.name }} - {{ practitioner.qualification }}
+            </option>
+          </select>
+          <p class="alert alert-danger" *ngIf="hasErrors('practitioner', 'required')">
+            Practitioner is required
+          </p>
+        </div>
+      </ng-container>
+
+    </div>
     <div class="d-flex justify-content-around mt-3">
-      <button (click)="save()" class="btn btn-primary" [disabled]="addForm.invalid">Save</button>
-      <button routerLink="/practitioner" class="btn btn-secondary">Cancel</button>
+      <button (click)="update()" class="btn btn-primary" [disabled]="editForm.invalid">Update</button>
+      <button routerLink="/patient" class="btn btn-secondary">Cancel</button>
     </div>
   </form>
   </div>
+
+  <ng-template #noResults>
+    <label class="text-warning mt-1">There are no practitioners which are working in this organization</label>
+  </ng-template>
 
