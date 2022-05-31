@@ -18,9 +18,6 @@ export class OrganizationDetailsComponent implements OnInit {
     const organizationId = this.activatedRoute.snapshot.params['id'];
     this.organizationService.findByIdView(organizationId).subscribe(organization => {
       this.organization = organization;
-
-      console.log(this.organization);
-
     });
   }
 

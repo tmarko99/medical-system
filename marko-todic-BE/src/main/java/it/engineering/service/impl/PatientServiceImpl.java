@@ -82,6 +82,13 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public List<PatientIdentifierNameDto> findAllSimple() {
+        return patientRepository.findAll()
+                .stream().map(patient -> patientMapper.toSimpleDto(patient))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public PatientSimpleDto findById(Integer id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
@@ -95,6 +102,13 @@ public class PatientServiceImpl implements PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", id));
 
         return patientMapper.toFullDto(patient);
+    }
+
+    @Override
+    public List<PatientIdentifierNameDto> findByOrganization(Integer id) {
+        return patientRepository.findAllByOrganizationId(id)
+                .stream().map(patient -> patientMapper.toSimpleDto(patient))
+                .collect(Collectors.toList());
     }
 
     @Override

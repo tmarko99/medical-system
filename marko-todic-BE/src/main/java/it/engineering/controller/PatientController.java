@@ -1,10 +1,6 @@
 package it.engineering.controller;
 
-import it.engineering.dto.ApiResponse;
-import it.engineering.dto.PagedResponse;
-import it.engineering.dto.PatientFullDto;
-import it.engineering.dto.PatientSimpleDto;
-import it.engineering.exception.SqlException;
+import it.engineering.dto.*;
 import it.engineering.service.PatientService;
 import it.engineering.utils.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.SQLException;
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -32,6 +28,11 @@ public class PatientController {
         return patientService.findAll(filter, pageNumber, pageSize, sortField, sortDir);
     }
 
+    @GetMapping("/findAll")
+    public ResponseEntity<List<PatientIdentifierNameDto>> findAll(){
+        return new ResponseEntity<>(patientService.findAllSimple(), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PatientSimpleDto> findById(@PathVariable("id") Integer id){
         return new ResponseEntity<>(patientService.findById(id), HttpStatus.OK);
@@ -40,6 +41,11 @@ public class PatientController {
     @GetMapping("/view/{id}")
     public ResponseEntity<PatientFullDto> findByIdView(@PathVariable("id") Integer id){
         return new ResponseEntity<>(patientService.findByIdView(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/findByOrganization/{id}")
+    public ResponseEntity<List<PatientIdentifierNameDto>> findAllByOrganization(@PathVariable("id") Integer id){
+        return new ResponseEntity<>(patientService.findByOrganization(id), HttpStatus.OK);
     }
 
     @PostMapping

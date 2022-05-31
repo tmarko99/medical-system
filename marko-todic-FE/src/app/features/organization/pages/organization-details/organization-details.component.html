@@ -1,1 +1,117 @@
-<p>organization-details works!</p>
+<div class="container" *ngIf="organization">
+  <h3 class="text-center my-3">Details about <u>{{ organization.name }}</u></h3>
+  <div class="card mb-3">
+    <div class="row no-gutters">
+      <div class="col-md-6">
+        <div class="card-body">
+          <h4 class="card-title text">Identifier: {{ organization.identifier }}</h4>
+          <p class="card-text">Organization type: {{ organization.type }}</p>
+          <p class="card-text">Active status: <b>{{ organization.active }}</b></p>
+          <p class="card-text">Number of practitioners: <b>{{organization.practitioners.length}}</b></p>
+          <p class="card-text">Number of patients: <b>{{organization.patients.length}}</b></p>
+          <p class="card-text">Number of examinations: <b>{{organization.examinations.length}}</b></p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card-body">
+          <h4 class="card-title text">Contact info:</h4>
+          <h6 class="card-text">Phone: {{organization.phone}}</h6>
+          <h6 class="card-text">Email: {{organization.email}}</h6>
+          <h6 class="card-text">Address: {{organization.address}}</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div class="main">
+  <ng-container *ngIf="organization?.patients.length > 0; else noPatients">
+    <div class="first bg-light" *ngIf="organization?.patients">
+      <h3 class="text-center">Patients:</h3>
+     <ng-container *ngFor="let patient of organization.patients">
+      <div class="card-body text-center">
+        <p class="card-text">Identifier: {{patient.identifier}}</p>
+        <p class="card-text">Name: {{patient.name}}</p>
+        <p class="card-text">Surname: {{patient.surname}}</p>
+        <p class="card-text">Gender: {{patient.gender }}</p>
+        <p class="card-text">DoB: {{patient.birthDate }}</p>
+        <p class="card-text">Address: {{patient.address }}</p>
+        <p class="card-text">Phone: {{patient.phone }}</p>
+        <p class="card-text">Email: {{patient.email}}</p>
+        <button [routerLink]="['/patient/patient-details/', patient.id]" class="btn btn-outline-primary mr-3">View more</button>
+      </div>
+      <hr>
+     </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="organization?.examinations.length > 0; else noExaminations">
+    <div class="second bg-light" *ngIf="organization?.examinations">
+      <h3 class="text-center">Examinations:</h3>
+      <ng-container *ngFor="let examination of organization.examinations">
+       <div class="card-body text-center">
+         <p class="card-text">Identifier: {{examination.identifier}}</p>
+         <p class="card-text">Status: {{examination.status}}</p>
+         <p class="card-text">ServiceType: {{examination.serviceType.name}}</p>
+         <p class="card-text">Priority: {{examination.priority }}</p>
+         <p class="card-text">Diagnosis: {{examination.diagnosis }}</p>
+         <p class="card-text">StartDate: {{examination.startDate }}</p>
+         <p class="card-text">EndDate: {{examination.endDate }}</p>
+         <button [routerLink]="['/examination/examination-details/', examination.id]" class="btn btn-outline-success mr-3">View more</button>
+       </div>
+       <hr>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="organization?.practitioners.length > 0; else noPractitioners">
+    <div class="third bg-light" *ngIf="organization?.practitioners">
+      <h3 class="text-center">Practitioners:</h3>
+      <ng-container *ngFor="let practitioner of organization.practitioners">
+       <div class="card-body text-center">
+        <p class="card-text">Identifier: {{practitioner.identifier}}</p>
+        <p class="card-text">Name: {{practitioner.name}}</p>
+        <p class="card-text">Surname: {{practitioner.surname}}</p>
+        <p class="card-text">Gender: {{practitioner.gender }}</p>
+        <p class="card-text">DoB: {{practitioner.birthDate }}</p>
+        <p class="card-text">Qualification: {{practitioner.qualification }}</p>
+        <p class="card-text">Address: {{practitioner.address }}</p>
+        <p class="card-text">Phone: {{practitioner.phone }}</p>
+        <p class="card-text">Email: {{practitioner.email}}</p>
+        <button [routerLink]="['/practitioner/practitioner-details/', practitioner.id]" class="btn btn-outline-warning mr-3">View more</button>
+       </div>
+       <hr>
+      </ng-container>
+    </div>
+  </ng-container>
+</div>
+
+
+<ng-template #noPractitioners>
+ <div class="third">
+  <div class="d-flex flex-column">
+    <h3 class="text-center">Practitioners:</h3>
+    <h5 class="text-center">There are no practitioners</h5>
+  </div>
+ </div>
+</ng-template>
+
+<ng-template #noExaminations>
+  <div class="second">
+    <div class="d-flex flex-column">
+      <h3 class="text-center">Examinations:</h3>
+      <h5 class="text-center">There are no examinations</h5>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #noPatients>
+  <div class="first">
+    <div class="d-flex flex-column">
+      <h3 class="text-center">Patients:</h3>
+      <h5 class="text-center">There are no patients</h5>
+    </div>
+  </div>
+</ng-template>

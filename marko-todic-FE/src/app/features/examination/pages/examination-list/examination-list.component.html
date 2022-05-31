@@ -1,0 +1,119 @@
+<div class="container">
+  <h1>List of Examinations</h1>
+
+  <div class="d-flex mb-4">
+    <button class="btn btn-outline-warning mr-3" routerLink="">Home</button>
+    <button class="btn btn-outline-info" routerLink="/examination/examination-add">Add Examination</button>
+  </div>
+</div>
+
+<form [formGroup]="filterForm">
+  <div class="container">
+    <div class="d-flex flex-direction-column flex-wrap">
+      <div class="mb-4 mr-3">
+        <select class="custom-select" formControlName="status">
+          <option value="">Any Status</option>
+          <option *ngFor="let status of statuses | keyvalue" [value]="status.key">
+            {{ status.value }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-4 mr-3">
+        <select class="custom-select" formControlName="priority">
+          <option value="">Any priority</option>
+          <option *ngFor="let priority of priorities | keyvalue" [value]="priority.key">
+            {{ priority.value }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-4 mr-3">
+        <select class="custom-select" formControlName="organization">
+          <option value="">Any organization</option>
+          <option *ngFor="let organization of organizations" [ngValue]="organization.id">
+            {{ organization.identifier }} - {{ organization.name }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-4 mr-3">
+        <select class="custom-select" formControlName="patient">
+          <option value="">Any patient</option>
+          <option *ngFor="let patient of patients" [ngValue]="patient.id">
+            {{ patient.identifier }} - {{ patient.name }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-4 mr-3">
+        <select class="custom-select" formControlName="serviceType">
+          <option value="">Any Service type</option>
+          <option *ngFor="let serviceType of serviceTypes" [ngValue]="serviceType.id">
+            {{ serviceType.id }} - {{ serviceType.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <button (click)="filter()" class="btn btn-primary">Filter</button>
+      </div>
+  </div>
+  </div>
+</form>
+
+<ng-container *ngIf="examinations.length > 0; else noResults">
+  <table class="table table-striped mx-auto col-lg-11 col-md-6">
+    <thead>
+    <tr>
+      <th sortable="id" (sort)="onSort($event)" scope="col">Id</th>
+      <th>Identifier</th>
+      <th sortable="status" (sort)="onSort($event)" scope="col">Status</th>
+      <th sortable="serviceType" (sort)="onSort($event)" scope="col">Service Type</th>
+      <th sortable="priority" (sort)="onSort($event)" scope="col">Priority</th>
+      <th sortable="startDate" (sort)="onSort($event)" scope="col">Start date</th>
+      <th sortable="endDate" (sort)="onSort($event)" scope="col">End date</th>
+      <th>Diagnosis</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let examination of examinations">
+      <td>{{ examination.id }}</td>
+      <td>{{ examination.identifier }}</td>
+      <td>
+        <span [ngClass]="getBadgeColorStatus(examination.status)">{{ examination.status }}</span>
+      </td>
+      <td>{{ examination.serviceType }}</td>
+      <td>
+        <span [ngClass]="getBadgeColorPriority(examination.priority)">{{ examination.priority }}</span>
+      </td>
+      <td>{{ examination.startDate }}</td>
+      <td>{{ examination.endDate }}</td>
+      <td>{{ examination.diagnosis }}</td>
+      <td>
+        <button class="btn btn-outline-warning mr-3">View</button>
+        <button [routerLink]="['/examination/examination-edit/', examination.id]" class="btn btn-outline-success mr-3">Edit</button>
+        <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(examination)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</ng-container>
+
+<ng-container *ngIf="examinations.length > 0">
+  <div class="d-flex justify-content-center align-items-start">
+    <select class="custom-select col-1 mx-2" (change)="onPageSizeChange()" [(ngModel)]="pageSize" >
+      <option *ngFor="let size of availablePageSize" [ngValue]="size">{{size}}</option>
+    </select>
+    <div class="d-flex justify-content-center">
+      <ngb-pagination
+        [(page)]="currentPage"
+        [pageSize]="pageSize"
+        [boundaryLinks]="true"
+        (pageChange)="onPageChange()"
+        [collectionSize]="totalItems">
+      </ngb-pagination>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #noResults>
+  <h1 class="text-center">No results to show</h1>
+</ng-template>

@@ -24,6 +24,9 @@ public interface PatientMapper {
     @Mapping(target = "organization.id", source = "organization")
     Patient toEntity(PatientSimpleDto patientSimpleDto);
 
+    @Mapping(target = "name", expression = "java(patient.getName() + ' ' + patient.getSurname())")
+    PatientIdentifierNameDto toSimpleDto(Patient patient);
+
     @Mapping(target = "organization", source = "organization.id")
     @Mapping(target = "practitioner", source = "practitioner.id")
     PatientSimpleDto toDto(Patient patient);

@@ -1,14 +1,13 @@
 package it.engineering.service;
 
-import it.engineering.dto.ApiResponse;
-import it.engineering.dto.ExaminationDto;
-import it.engineering.dto.ExaminationFullDto;
-import it.engineering.dto.PagedResponse;
+import it.engineering.dto.*;
 
 public interface ExaminationService {
-    PagedResponse<ExaminationDto> findAll(int pageNumber, int pageSize, String sortField, String sortDir);
-    ExaminationFullDto findById(Integer id);
+    PagedResponse<ExaminationDto> findAll(FilterDto filterDto, int pageNumber, int pageSize, String sortField, String sortDir);
+    ExaminationFullDto findByIdView(Integer id);
+    ExaminationDto findById(Integer id);
     ExaminationDto save(ExaminationDto examinationDto);
+    ExaminationDto update(Integer id, ExaminationDto examinationDto);
 
     ApiResponse delete(Integer id);
 }

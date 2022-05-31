@@ -1,15 +1,13 @@
 package it.engineering.service.impl;
 
-import it.engineering.dto.ApiResponse;
-import it.engineering.dto.ExaminationDto;
-import it.engineering.dto.ExaminationFullDto;
-import it.engineering.dto.PagedResponse;
+import it.engineering.dto.*;
 import it.engineering.entity.*;
 import it.engineering.exception.BadRequestException;
 import it.engineering.exception.ResourceNotFoundException;
 import it.engineering.mapper.ExaminationMapper;
 import it.engineering.repository.*;
 import it.engineering.service.ExaminationService;
+import it.engineering.specification.ExaminationSpecification;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,17 +42,20 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Autowired
     private PatientRepository patientRepository;
 
+    @Autowired
+    private ExaminationSpecification examinationSpecification;
+
     private final ExaminationMapper examinationMapper = Mappers.getMapper(ExaminationMapper.class);
 
     @Override
-    public PagedResponse<ExaminationDto> findAll(int pageNumber, int pageSize, String sortField, String sortDir) {
+    public PagedResponse<ExaminationDto> findAll(FilterDto filterDto, int pageNumber, int pageSize, String sortField, String sortDir) {
         Sort sort = Sort.by(sortField);
 
         sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? sort.ascending() : sort.descending();
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        Page<Examination> examinations = examinationRepository.findAll(pageable);
+        Page<Examination> examinations = examinationRepository.findAll(examinationSpecification.getExaminations(filterDto), pageable);
 
         List<Examination> examinationList = examinations.getContent();
 
@@ -75,11 +75,19 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
-    public ExaminationFullDto findById(Integer id) {
+    public ExaminationFullDto findByIdView(Integer id) {
         Examination examination = examinationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Examination", "id", id));
 
         return examinationMapper.toFullDto(examination);
+    }
+
+    @Override
+    public ExaminationDto findById(Integer id) {
+        Examination examination = examinationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Examination", "id", id));
+
+        return examinationMapper.toDto(examination);
     }
 
     @Override
@@ -122,6 +130,46 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     @Override
+    public ExaminationDto update(Integer id, ExaminationDto examinationDto) {
+        Examination examination = examinationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Examination", "id", id));
+
+        List<Practitioner> practitioners = new ArrayList<>(examinationDto.getPractitioners().size());
+
+        ServiceType serviceType = serviceTypeRepository.findById(examinationDto.getServiceType()).
+                orElseThrow(() -> new ResourceNotFoundException("ServiceType", "id", examinationDto.getServiceType()));
+
+        Organization organization = organizationRepository.findById(examinationDto.getOrganization())
+                .orElseThrow(() -> new ResourceNotFoundException("Organization", "id", examinationDto.getOrganization()));
+
+
+        Patient patient = patientRepository.findById(examinationDto.getPatient())
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "id", examinationDto.getPatient()));
+
+        examinationDto.getPractitioners().forEach(practitionerId -> {
+            Practitioner practitioner = practitionerRepository.findById(practitionerId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Practitioner", "id", practitionerId));
+
+            practitioners.add(practitioner);
+        });
+
+        examination.setIdentifier(examinationDto.getIdentifier());
+        examination.setStatus(examinationDto.getStatus());
+        examination.setServiceType(serviceType);
+        examination.setPriority(examinationDto.getPriority());
+        examination.setStartDate(examinationDto.getStartDate());
+        examination.setEndDate(examinationDto.getEndDate());
+        examination.setDiagnosis(examinationDto.getDiagnosis());
+        examination.setOrganization(organization);
+        examination.setPractitioners(practitioners);
+        examination.setPatient(patient);
+
+        Examination updatedExamination = examinationRepository.save(examination);
+
+        return examinationMapper.toDto(updatedExamination);
+    }
+
+    @Override
     public ApiResponse delete(Integer id) {
         Examination examination = examinationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Examination", "id", id));
@@ -131,7 +179,7 @@ public class ExaminationServiceImpl implements ExaminationService {
 
         ApiResponse apiResponse;
 
-        if(examination.getStartDate().before(Date.from(instant))
+        if(examination.getStartDate().after(Date.from(instant))
                 || examination.getEndDate().after(Date.from(instant))){
             apiResponse = new ApiResponse(Boolean.FALSE, "You cannot delete an examination because is not completed");
             throw new BadRequestException(apiResponse);

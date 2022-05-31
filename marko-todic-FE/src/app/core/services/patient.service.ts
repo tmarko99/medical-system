@@ -18,6 +18,10 @@ export class PatientService {
     return this.httpClient.get<PageDto<Patient>>(`${environment.serverUrl}/api/patient?filter=${filter}&pageNumber=${page}&pageSize=${size}&sortField=${sortField}&sortDir=${sortDir}`);
   }
 
+  findAllSimple(): Observable<Patient[]>{
+    return this.httpClient.get<Patient[]>(`${environment.serverUrl}/api/patient/findAll`);
+  }
+
   findById(id: number){
     return this.httpClient.get<Patient>(`${environment.serverUrl}/api/patient/${id}`);
   }
@@ -25,6 +29,11 @@ export class PatientService {
   findByIdView(id: number){
     return this.httpClient.get<PatientView>(`${environment.serverUrl}/api/patient/view/${id}`);
   }
+
+  findByOrganizationId(id: number): Observable<Patient[]> {
+    return this.httpClient.get<Patient[]>(`${environment.serverUrl}/api/patient/findByOrganization/${id}`);
+  }
+
 
   save(patient: Patient){
     return this.httpClient.post<Patient>(`${environment.serverUrl}/api/patient`, patient);

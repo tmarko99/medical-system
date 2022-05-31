@@ -18,6 +18,8 @@ public interface PatientRepository extends JpaRepository<Patient, Integer> {
     @Query("SELECT p FROM Patient p WHERE p.active=true AND p.organization.active=true")
     Page<Patient> findAll(Pageable pageable);
 
+    List<Patient> findAllByOrganizationId(Integer id);
+
     @Query("SELECT p FROM Patient p WHERE p.active=true")
     List<Patient> findAll();
     @Query("SELECT p FROM Patient p WHERE p.active=true AND p.organization.active=true AND (LOWER(p.name) LIKE %:filter% OR LOWER(p.surname) LIKE %:filter%)")
