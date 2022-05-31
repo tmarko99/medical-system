@@ -30,7 +30,6 @@
     <tr>
       <th sortable="id" (sort)="onSort($event)" scope="col">Id</th>
       <th sortable="identifier" (sort)="onSort($event)" scope="col">Identifier</th>
-      <th>Active</th>
       <th sortable="name" (sort)="onSort($event)" scope="col">Name</th>
       <th sortable="surname" (sort)="onSort($event)" scope="col">Surname</th>
       <th sortable="gender" (sort)="onSort($event)" scope="col">Gender</th>
@@ -44,7 +43,6 @@
     <tr *ngFor="let patient of patients">
       <td>{{ patient.id }}</td>
       <td>{{ patient.identifier }}</td>
-      <td>{{ patient.active }}</td>
       <td>{{ patient.name }}</td>
       <td>{{ patient.surname }}</td>
       <td>

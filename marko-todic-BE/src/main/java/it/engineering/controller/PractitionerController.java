@@ -33,6 +33,7 @@ public class PractitionerController {
         return new ResponseEntity<>(practitionerService.findAllSimple(), HttpStatus.OK);
     }
 
+
     @GetMapping("/findByOrganization/{id}")
     public ResponseEntity<List<PractitionerIdentifierNameDto>> findAll(@PathVariable("id") Integer id){
         return new ResponseEntity<>(practitionerService.findByOrganization(id), HttpStatus.OK);

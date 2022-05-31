@@ -1,3 +1,4 @@
+import { Examination } from "./examination";
 import { Gender } from "./gender";
 import { MaritalStatus } from "./maritalStatus";
 import { Organization } from "./organization";
@@ -17,6 +18,6 @@ export interface PatientView {
   deceased: boolean;
   maritalStatus: MaritalStatus;
   practitioner: Practitioner;
-  examinations: any[];
+  examinations: Examination[];
   organization: Organization;
 }

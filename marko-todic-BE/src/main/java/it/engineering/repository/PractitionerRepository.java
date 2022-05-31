@@ -27,6 +27,9 @@ public interface PractitionerRepository extends JpaRepository<Practitioner, Inte
     @Query("SELECT p FROM Practitioner p WHERE p.active=true AND p.organization.active=true AND p.gender=:filter")
     Page<Practitioner> findAllByGender(@Param("filter") Gender filter, Pageable pageable);
 
+    @Query("SELECT p FROM Practitioner p WHERE p.organization IS NULL")
+    Page<Practitioner> findAllUnassigned(Pageable pageable);
+
     @Query("SELECT p FROM Practitioner p WHERE p.active=true AND p.organization.active=true AND p.qualification=:filter")
     Page<Practitioner> findAllByQualification(@Param("filter") Qualification filter, Pageable pageable);
     @Query("SELECT p FROM Practitioner p WHERE p.active=true AND p.organization.active=true AND (LOWER(p.name) LIKE %:filter% OR LOWER(p.surname) LIKE %:filter%)")
@@ -36,4 +39,9 @@ public interface PractitionerRepository extends JpaRepository<Practitioner, Inte
     @Modifying
     @Transactional
     void delete(@Param("id") Integer id);
+
+    @Query("UPDATE Practitioner p SET p.organization=null WHERE p.id=:id")
+    @Modifying
+    @Transactional
+    void setUnassigned(@Param("id") Integer id);
 }

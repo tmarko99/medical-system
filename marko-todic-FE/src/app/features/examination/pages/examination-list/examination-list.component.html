@@ -1,9 +1,19 @@
 <div class="container">
   <h1>List of Examinations</h1>
 
-  <div class="d-flex mb-4">
+  <div class="d-flex justify-content-between mb-4">
+   <div>
     <button class="btn btn-outline-warning mr-3" routerLink="">Home</button>
     <button class="btn btn-outline-info" routerLink="/examination/examination-add">Add Examination</button>
+   </div>
+    <div>
+      <input type="file" (change)="selectFile($event)" />
+      <ng-container *ngIf="isFileSelected">
+        <button class="btn btn-success" (click)="upload()">
+          Upload
+        </button>
+      </ng-container>
+    </div>
   </div>
 </div>
 
@@ -88,7 +98,7 @@
       <td>{{ examination.endDate }}</td>
       <td>{{ examination.diagnosis }}</td>
       <td>
-        <button class="btn btn-outline-warning mr-3">View</button>
+        <button [routerLink]="['/examination/examination-details/', examination.id]" class="btn btn-outline-warning mr-3">View</button>
         <button [routerLink]="['/examination/examination-edit/', examination.id]" class="btn btn-outline-success mr-3">Edit</button>
         <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(examination)">Delete</button>
       </td>

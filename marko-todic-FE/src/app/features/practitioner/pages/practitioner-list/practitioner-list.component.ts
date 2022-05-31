@@ -20,6 +20,7 @@ export class PractitionerListComponent implements OnInit {
 
   searchValue: string = '';
   genderValue: string = '';
+  unassigned: boolean;
   qualificationValue: string = '';
   gender = Gender;
   qualifications = Qualification;
@@ -41,10 +42,10 @@ export class PractitionerListComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(params => {
       if(params.created !== undefined && params.created === 'true'){
-        this.toastr.success("Organization saved successfully");
+        this.toastr.success("Practitioner saved successfully");
       }
       else if(params.updated !== undefined && params.updated === 'true'){
-        this.toastr.success("Organization updated successfully");
+        this.toastr.success("Practitioner updated successfully");
       }
     })
 
@@ -54,8 +55,10 @@ export class PractitionerListComponent implements OnInit {
 
   findAll(){
     const filter = (this.searchValue === '') ? (this.genderValue === '' ? this.qualificationValue : this.genderValue) : this.searchValue;
+    const unassignedValue = this.unassigned === true ? 'unassigned' : '';
+    const valueForFiltering = unassignedValue !== '' ? unassignedValue : filter;
 
-    this.practitionerService.findAll(filter, this.currentPage - 1, this.pageSize, this.sortField, this.sortDir).subscribe(practitioners => {
+    this.practitionerService.findAll(valueForFiltering, this.currentPage - 1, this.pageSize, this.sortField, this.sortDir).subscribe(practitioners => {
       this.practitioners = practitioners.content;
       this.totalItems = practitioners.totalElements;
       this.pageSize = practitioners.pageSize;

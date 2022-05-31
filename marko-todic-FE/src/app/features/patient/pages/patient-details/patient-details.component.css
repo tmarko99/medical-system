@@ -1,0 +1,17 @@
+h6{
+  margin-bottom: 1rem;
+}
+.main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.first::-webkit-scrollbar {
+  display: none;
+}
+.first {
+  height: 400px;
+  display: block;
+  width: 90%;
+  overflow-y: scroll;
+}

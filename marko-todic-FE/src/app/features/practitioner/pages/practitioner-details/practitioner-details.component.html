@@ -1,1 +1,102 @@
-<p>practitioner-details works!</p>
+<div class="container" *ngIf="practitoner">
+  <h3 class="text-center my-3">Details about practitioner: <u>{{ practitoner.name }} {{ practitoner.surname }}</u></h3>
+  <div class="card mb-3">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <div class="card-body">
+          <h4 class="card-title text">Identifier: {{ practitoner.identifier }}</h4>
+          <p class="card-text">Active status: <b>{{ practitoner.active }}</b></p>
+          <p class="card-text">Gender: {{ practitoner.gender }}</p>
+          <p class="card-text">DoB: {{ practitoner.birthDate }}</p>
+          <p class="card-text">Qualification: <b>{{ practitoner.qualification }}</b></p>
+          <p class="card-text">Number of patients: <b>{{practitoner.patients.length}}</b></p>
+          <p class="card-text">Number of examinations: <b>{{practitoner.examinations.length}}</b></p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-body">
+          <h4 class="card-title text">Contact info:</h4>
+          <h6 class="card-text">Phone: {{practitoner.phone}}</h6>
+          <h6 class="card-text">Email: {{practitoner.email}}</h6>
+          <h6 class="card-text">Address: {{practitoner.address}}</h6>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-body bg-info">
+          <h4 class="card-title text">Organization info: {{ practitoner.organization.name }}</h4>
+          <h5 class="card-title text">Identifier: {{ practitoner.organization.identifier }}</h5>
+          <p class="card-text">Active status: <b>{{ practitoner.organization.active }}</b></p>
+          <p class="card-text">Type: {{ practitoner.organization.type }}</p>
+          <p class="card-text">Address: {{ practitoner.organization.address }}</p>
+          <p class="card-text">Phone: {{ practitoner.organization.phone }}</p>
+          <p class="card-text">Email: {{ practitoner.organization.email }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div class="main">
+  <ng-container *ngIf="practitoner?.patients.length > 0; else noPatients">
+    <div class="first bg-light" *ngIf="practitoner?.patients">
+      <h3 class="text-center">Patients:</h3>
+      <hr>
+     <ng-container *ngFor="let patient of practitoner.patients">
+      <div class="card-body text-center">
+        <p class="card-text">Identifier: {{patient.identifier}}</p>
+        <p class="card-text">Name: {{patient.name}}</p>
+        <p class="card-text">Surname: {{patient.surname}}</p>
+        <p class="card-text">Gender: {{patient.gender }}</p>
+        <p class="card-text">DoB: {{patient.birthDate }}</p>
+        <p class="card-text">Address: {{patient.address }}</p>
+        <p class="card-text">Phone: {{patient.phone }}</p>
+        <p class="card-text">Email: {{patient.email}}</p>
+        <button [routerLink]="['/patient/patient-details/', patient.id]" class="btn btn-outline-primary mr-3">View more</button>
+      </div>
+      <hr>
+     </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="practitoner?.examinations.length > 0; else noExaminations">
+    <div class="second bg-light" *ngIf="practitoner?.examinations">
+      <h3 class="text-center">Examinations:</h3>
+      <hr>
+      <ng-container *ngFor="let examination of practitoner.examinations">
+       <div class="card-body text-center">
+         <p class="card-text">Identifier: {{examination.identifier}}</p>
+         <p class="card-text">Status: {{examination.status}}</p>
+         <p class="card-text">ServiceType: {{ examination.serviceType }}</p>
+         <p class="card-text">Priority: {{examination.priority }}</p>
+         <p class="card-text">Diagnosis: {{examination.diagnosis }}</p>
+         <p class="card-text">StartDate: {{examination.startDate }}</p>
+         <p class="card-text">EndDate: {{examination.endDate }}</p>
+         <button [routerLink]="['/examination/examination-details/', examination.id]" class="btn btn-outline-success mr-3">View more</button>
+       </div>
+       <hr>
+      </ng-container>
+    </div>
+  </ng-container>
+
+</div>
+
+<ng-template #noPatients>
+  <div class="first">
+    <div class="d-flex flex-column">
+      <h3 class="text-center">Patients:</h3>
+      <h5 class="text-center">There are no patients</h5>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #noExaminations>
+  <div class="second">
+    <div class="d-flex flex-column">
+      <h3 class="text-center">Examinations:</h3>
+      <h5 class="text-center">There are no examinations</h5>
+    </div>
+  </div>
+</ng-template>
+

@@ -7,18 +7,20 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="d-flex mb-4 col-lg-4 col-md-6 mx-auto">
-    <input type="text" class="form-control" ngModel matInput placeholder="Search" name="search" search #searchInput="ngModel"
-      [(ngModel)]="searchValue" (keyup)="filter()">
-  </div>
-  <div class="d-flex mb-4 col-lg-4 col-md-6 mx-2">
-    <select class="custom-select col-lg-5" [(ngModel)]="organizationValue" ngModel (change)="filter()">
-      <option value="">Any organization</option>
-      <option *ngFor="let organizationType of organizationTypes | keyvalue" [value]="organizationType.key">
-        {{ organizationType.value }}
-      </option>
-    </select>
+<div class="container">
+  <div class="d-flex flex-direction-column justify-content-around">
+      <div class="d-flex mb-4 col-lg-5 col-md-3">
+        <input type="text" class="form-control" ngModel matInput placeholder="Search" name="search" search #searchInput="ngModel"
+          [(ngModel)]="searchValue" (keyup)="filter()">
+      </div>
+      <div class="d-flex mb-4 col-lg-4 col-md-3">
+        <select class="custom-select" [(ngModel)]="organizationValue" ngModel (change)="filter()">
+          <option value="">Any organization</option>
+          <option *ngFor="let organizationType of organizationTypes | keyvalue" [value]="organizationType.key">
+            {{ organizationType.value }}
+          </option>
+        </select>
+    </div>
   </div>
 </div>
 
@@ -28,7 +30,6 @@
     <tr>
       <th sortable="id" (sort)="onSort($event)" scope="col">Id</th>
       <th sortable="identifier" (sort)="onSort($event)" scope="col">Identifier</th>
-      <th>Active</th>
       <th sortable="type" (sort)="onSort($event)" scope="col">Type</th>
       <th sortable="name" (sort)="onSort($event)" scope="col">Name</th>
       <th sortable="address" (sort)="onSort($event)" scope="col">Address</th>
@@ -41,7 +42,6 @@
     <tr *ngFor="let organization of organizations">
       <td>{{ organization.id }}</td>
       <td>{{ organization.identifier }}</td>
-      <td>{{ organization.active }}</td>
       <td>
         <span [ngClass]="getBadgeColor(organization.type)">{{ organization.type }}</span>
       </td>

@@ -128,6 +128,7 @@
         <div class="d-flex flex-column">
           <label for="practitioner">Practitioner</label>
           <select id="practitioner" class="custom-select" formControlName="practitioner">
+            <option ngValue="">Select practitioner</option>
             <option *ngFor="let practitioner of practitioners" [ngValue]="practitioner.id">
               {{ practitioner.identifier }} - {{ practitioner.name }} - {{ practitioner.qualification }}
             </option>

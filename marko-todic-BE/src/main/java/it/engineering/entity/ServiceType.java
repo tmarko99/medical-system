@@ -18,6 +18,10 @@ public class ServiceType {
     public ServiceType() {
     }
 
+    public ServiceType(String name) {
+        this.name = name;
+    }
+
     public ServiceType(Integer id, String name) {
         this.id = id;
         this.name = name;

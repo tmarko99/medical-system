@@ -161,6 +161,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
 
         for(Practitioner practitioner : organization.getPractitioners()){
+            practitionerRepository.setUnassigned(practitioner.getId());
             practitionerRepository.delete(practitioner.getId());
         }
 

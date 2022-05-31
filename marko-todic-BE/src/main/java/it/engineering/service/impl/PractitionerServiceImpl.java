@@ -47,7 +47,10 @@ public class PractitionerServiceImpl implements PractitionerService {
         else if(Arrays.stream(Qualification.values()).map(Enum::name).collect(Collectors.toList()).contains(filter)){
             practitioners = practitionerRepository.findAllByQualification(Qualification.fromString(filter), pageable);
         }
-        else if(filter != null){
+        else if(filter.equalsIgnoreCase("unassigned")){
+            practitioners = practitionerRepository.findAllUnassigned(pageable);
+        }
+        else if(!filter.equals("unassigned")){
             practitioners = practitionerRepository.findAllByNameContainingAndSurnameContaining(filter, pageable);
         }
         else{

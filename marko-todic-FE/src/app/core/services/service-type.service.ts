@@ -18,4 +18,10 @@ export class ServiceTypeService {
   findById(id: number): Observable<ServiceType>{
     return this.httpClient.get<ServiceType>(`${environment.serverUrl}/api/serviceType/${id}`);
   }
+
+  upload(file: File){
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+    return this.httpClient.post(`${environment.serverUrl}/api/serviceType/upload`, formData);
+  }
 }

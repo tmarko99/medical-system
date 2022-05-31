@@ -75,6 +75,7 @@
         <div class="d-flex flex-column">
           <label for="patient">Patient</label>
           <select id="patient" class="custom-select" formControlName="patient">
+            <option ngValue="">Select patient</option>
             <option *ngFor="let patient of patients" [ngValue]="patient.id">
               {{ patient.identifier }} - {{ patient.name }}
             </option>
@@ -91,12 +92,13 @@
         <div class="d-flex flex-column">
           <label for="practitioners">Practitioner</label>
           <select multiple id="practitioners" class="custom-select" formControlName="practitioners">
+            <option ngValue="">Select practitioners</option>
             <option *ngFor="let practitioner of practitioners" [ngValue]="practitioner.id">
               {{ practitioner.identifier }} - {{ practitioner.name }} - {{ practitioner.qualification }}
             </option>
           </select>
-          <p class="alert alert-danger" *ngIf="hasErrors('practitioner', 'required')">
-            Practitioner is required
+          <p class="alert alert-danger" *ngIf="hasErrors('practitioners', 'required')">
+            Practitioners is required
           </p>
         </div>
       </ng-container>

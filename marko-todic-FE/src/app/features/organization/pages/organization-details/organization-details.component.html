@@ -1,5 +1,5 @@
 <div class="container" *ngIf="organization">
-  <h3 class="text-center my-3">Details about <u>{{ organization.name }}</u></h3>
+  <h3 class="text-center my-3">Details about organization: <u>{{ organization.name }}</u></h3>
   <div class="card mb-3">
     <div class="row no-gutters">
       <div class="col-md-6">
@@ -30,6 +30,7 @@
   <ng-container *ngIf="organization?.patients.length > 0; else noPatients">
     <div class="first bg-light" *ngIf="organization?.patients">
       <h3 class="text-center">Patients:</h3>
+      <hr>
      <ng-container *ngFor="let patient of organization.patients">
       <div class="card-body text-center">
         <p class="card-text">Identifier: {{patient.identifier}}</p>
@@ -50,11 +51,12 @@
   <ng-container *ngIf="organization?.examinations.length > 0; else noExaminations">
     <div class="second bg-light" *ngIf="organization?.examinations">
       <h3 class="text-center">Examinations:</h3>
+      <hr>
       <ng-container *ngFor="let examination of organization.examinations">
        <div class="card-body text-center">
          <p class="card-text">Identifier: {{examination.identifier}}</p>
          <p class="card-text">Status: {{examination.status}}</p>
-         <p class="card-text">ServiceType: {{examination.serviceType.name}}</p>
+         <p class="card-text">ServiceType: {{ examination.serviceType.name }}</p>
          <p class="card-text">Priority: {{examination.priority }}</p>
          <p class="card-text">Diagnosis: {{examination.diagnosis }}</p>
          <p class="card-text">StartDate: {{examination.startDate }}</p>
@@ -69,6 +71,7 @@
   <ng-container *ngIf="organization?.practitioners.length > 0; else noPractitioners">
     <div class="third bg-light" *ngIf="organization?.practitioners">
       <h3 class="text-center">Practitioners:</h3>
+      <hr>
       <ng-container *ngFor="let practitioner of organization.practitioners">
        <div class="card-body text-center">
         <p class="card-text">Identifier: {{practitioner.identifier}}</p>

@@ -36,6 +36,10 @@ export class ExaminationListComponent implements OnInit {
 
   filterObject:any = {};
 
+  selectedFile: File;
+  isFileSelected = false;
+  selectedFileName = '';
+
   currentPage = 1;
   totalItems = 10;
   pageSize = 5;
@@ -95,6 +99,21 @@ export class ExaminationListComponent implements OnInit {
     })
   }
 
+  selectFile(event) {
+    this.selectedFile = event.target.files[0];
+    this.selectedFileName = this.selectedFile.name;
+    this.isFileSelected = true;
+  }
+
+  upload() {
+    this.serviceType.upload(this.selectedFile).subscribe(() => {
+      this.toastr.success("Uploaded the file successfully");
+      this.selectedFile = undefined;
+    })
+
+
+  }
+
   onPageChange() {
     this.findAll();
   }
@@ -132,6 +151,7 @@ export class ExaminationListComponent implements OnInit {
     }
 
     this.findAll();
+    this.filterObject = {};
   }
 
 
