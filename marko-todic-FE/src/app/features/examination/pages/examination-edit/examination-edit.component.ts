@@ -13,6 +13,7 @@ import { OrganizationService } from 'src/app/core/services/organization.service'
 import { PatientService } from 'src/app/core/services/patient.service';
 import { PractitionerService } from 'src/app/core/services/practitioner.service';
 import { ServiceTypeService } from 'src/app/core/services/service-type.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-examination-edit',
@@ -55,7 +56,6 @@ export class ExaminationEditComponent implements OnInit {
       this.createForm();
       this.findByOrganizationId();
     })
-
   }
 
   createForm(){
@@ -65,12 +65,12 @@ export class ExaminationEditComponent implements OnInit {
       status: new FormControl(this.examination.status, [Validators.required]),
       serviceType: new FormControl(this.examination.serviceType, [Validators.required]),
       priority: new FormControl(this.examination.priority),
-      startDate: new FormControl(this.examination.startDate),
-      endDate: new FormControl(this.examination.endDate),
+      startDate: new FormControl(formatDate(this.examination.startDate, 'yyyy-MM-ddTHH:mm', 'en')),
+      endDate: new FormControl(formatDate(this.examination.endDate, 'yyyy-MM-ddTHH:mm', 'en')),
       diagnosis: new FormControl(this.examination.diagnosis),
       organization: new FormControl(this.examination.organization, [Validators.required]),
       patient: new FormControl(this.examination.patient, [Validators.required]),
-      practitioners: new FormControl(this.examination.practitoners, [Validators.required]),
+      practitioners: new FormControl(this.examination.practitioners, [Validators.required]),
     })
   }
 

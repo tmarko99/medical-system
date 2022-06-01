@@ -11,6 +11,6 @@ export interface Examination {
   endDate: Date;
   diagnosis: string;
   organization: number;
-  practitoners: number[];
+  practitioners: number[];
   patient: number;
 }
