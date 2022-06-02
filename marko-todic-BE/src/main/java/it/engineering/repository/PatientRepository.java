@@ -1,5 +1,6 @@
 package it.engineering.repository;
 
+import it.engineering.dto.PatientSimpleDto;
 import it.engineering.entity.MaritalStatus;
 import it.engineering.entity.Patient;
 import org.springframework.data.domain.Page;

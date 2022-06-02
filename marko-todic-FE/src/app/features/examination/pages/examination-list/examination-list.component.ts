@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Toast, ToastrService } from 'ngx-toastr';
+import { LocalStorageService } from 'ngx-webstorage';
 import { Examination } from 'src/app/core/models/examination';
 import { Filter } from 'src/app/core/models/filter';
 import { Organization } from 'src/app/core/models/organization';
@@ -10,6 +11,7 @@ import { Patient } from 'src/app/core/models/patient';
 import { Priority } from 'src/app/core/models/priority';
 import { ServiceType } from 'src/app/core/models/service-type';
 import { Status } from 'src/app/core/models/status';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { ExaminationService } from 'src/app/core/services/examination.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { PatientService } from 'src/app/core/services/patient.service';
@@ -47,16 +49,21 @@ export class ExaminationListComponent implements OnInit {
   sortDir: string = 'asc';
   availablePageSize = [2, 5, 10, 15, 20];
 
+  roleName: string = '';
+
   @ViewChildren(SortableHeaderDirective)
   headers: QueryList<SortableHeaderDirective>
 
   constructor(private examinationService: ExaminationService, private modalService: NgbModal,
     private toastr: ToastrService, private organizationService: OrganizationService,
     private patientService: PatientService, private serviceType: ServiceTypeService,
-    private activatedRoute: ActivatedRoute) { }
+    private activatedRoute: ActivatedRoute, private authService: AuthService ) { }
 
   ngOnInit(): void {
     this.createForm();
+
+    this.roleName = this.authService.getUserRole();
+
     this.organizationService.findAllSimple().subscribe(organizations => {
       this.organizations = organizations;
     });

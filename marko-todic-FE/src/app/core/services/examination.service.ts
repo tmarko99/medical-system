@@ -18,6 +18,11 @@ export class ExaminationService {
     return this.httpClient.post<PageDto<Examination>>(`${environment.serverUrl}/api/examination/filter?pageNumber=${page}&pageSize=${size}&sortField=${sortField}&sortDir=${sortDir}`, filter);
   }
 
+  findAllNoPagination(){
+    return this.httpClient.post<PageDto<Examination>>(`${environment.serverUrl}/api/examination/filter`, {});
+  }
+
+
   findById(id: number): Observable<Examination>{
     return this.httpClient.get<Examination>(`${environment.serverUrl}/api/examination/${id}`);
   }

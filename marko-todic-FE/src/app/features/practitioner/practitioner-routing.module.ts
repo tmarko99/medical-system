@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthGuard } from 'src/app/core/guards/auth.guard';
+import { RoleGuard } from 'src/app/core/guards/role.guard';
 import { PractitionerAddComponent } from './pages/practitioner-add/practitioner-add.component';
 import { PractitionerDetailsComponent } from './pages/practitioner-details/practitioner-details.component';
 import { PractitionerEditComponent } from './pages/practitioner-edit/practitioner-edit.component';
@@ -10,7 +12,7 @@ const routes: Routes = [
   { path: 'practitioner-list', component: PractitionerListComponent },
   { path: 'practitioner-add', component: PractitionerAddComponent },
   { path: 'practitioner-edit/:id', component: PractitionerEditComponent },
-  { path: 'practitioner-details/:id', component: PractitionerDetailsComponent },
+  { path: 'practitioner-details/:id', component: PractitionerDetailsComponent }
 ];
 
 @NgModule({

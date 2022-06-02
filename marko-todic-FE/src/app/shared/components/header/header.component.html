@@ -1,23 +1,33 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" routerLink="/">Navbar</a>
+  <a class="navbar-brand" routerLink="/">Medical system</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/organization">Organizations</a>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" *ngIf="role == 'ROLE_ADMIN'" routerLink="/organization">Organizations</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/practitioner">Practitioners</a>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" *ngIf="role == 'ROLE_PRACTITIONER' || role == 'ROLE_ADMIN'" routerLink="/practitioner">Practitioners</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/patient">Patients</a>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" *ngIf="role == 'ROLE_PATIENT' || role == 'ROLE_ADMIN'" routerLink="/patient">Patients</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/examination">Examinations</a>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" *ngIf="role == 'ROLE_PRACTITIONER' || role == 'ROLE_ADMIN'" routerLink="/examination">Examinations</a>
       </li>
     </ul>
+    <div class="form-inline my-2 my-lg-0">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="!isLoggedIn" routerLink="/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link logout" *ngIf="isLoggedIn" (click)="onLogout()">Logout</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>

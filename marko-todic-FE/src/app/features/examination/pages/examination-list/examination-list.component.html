@@ -6,7 +6,7 @@
     <button class="btn btn-outline-warning mr-3" routerLink="">Home</button>
     <button class="btn btn-outline-info" routerLink="/examination/examination-add">Add Examination</button>
    </div>
-    <div>
+    <div *ngIf="roleName == 'ROLE_ADMIN'">
       <input type="file" (change)="selectFile($event)" />
       <ng-container *ngIf="isFileSelected">
         <button class="btn btn-success" (click)="upload()">
@@ -94,8 +94,8 @@
       <td>
         <span [ngClass]="getBadgeColorPriority(examination.priority)">{{ examination.priority }}</span>
       </td>
-      <td>{{ examination.startDate }}</td>
-      <td>{{ examination.endDate }}</td>
+      <td>{{ examination.startDate | date: 'short' }}</td>
+      <td>{{ examination.endDate | date: 'short' }}</td>
       <td>{{ examination.diagnosis }}</td>
       <td>
         <button [routerLink]="['/examination/examination-details/', examination.id]" class="btn btn-outline-warning mr-3">View</button>

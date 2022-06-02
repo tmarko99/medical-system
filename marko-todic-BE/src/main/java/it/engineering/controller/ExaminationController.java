@@ -1,11 +1,14 @@
 package it.engineering.controller;
 
 import it.engineering.dto.*;
+import it.engineering.security.UserPrincipal;
 import it.engineering.service.ExaminationService;
 import it.engineering.utils.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

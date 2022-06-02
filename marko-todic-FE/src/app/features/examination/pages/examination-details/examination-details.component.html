@@ -6,8 +6,8 @@
         <div class="card-body">
           <p class="card-text">Status: <b>{{ examination.status }}</b></p>
           <p class="card-text">Priority: {{ examination.priority }}</p>
-          <p class="card-text">Start date: {{ examination.startDate }}</p>
-          <p class="card-text">End date: {{ examination.endDate }}</p>
+          <p class="card-text">Start date: {{ examination.startDate | date: 'medium' }}</p>
+          <p class="card-text">End date: {{ examination.endDate | date: 'medium' }}</p>
           <p class="card-text">Diagnosis: <b>{{ examination.diagnosis }}</b></p>
           <p class="card-text">Service type: <b>{{ examination.serviceType.name }}</b></p>
         </div>
@@ -52,7 +52,7 @@
             <h5 class="card-title text">Identifier: {{ practitioner.identifier }}</h5>
             <p class="card-text">Active status: <b>{{ practitioner.active }}</b></p>
             <p class="card-text">Gender: {{ practitioner.gender }}</p>
-            <p class="card-text">DoB: {{ practitioner.birthDate }}</p>
+            <p class="card-text">DoB: {{ practitioner.birthDate | date: 'mediumDate' }}</p>
             <p class="card-text">Phone: {{ practitioner.phone }}</p>
             <p class="card-text">Email: {{ practitioner.email }}</p>
             <button [routerLink]="['/practitioner/practitioner-details/', practitioner.id]" class="btn btn-outline-success mr-3">View more</button>
@@ -68,8 +68,8 @@
 <ng-template #noPractitioners>
   <div class="second">
     <div class="d-flex flex-column">
-      <h3 class="text-center">Examinations:</h3>
-      <h5 class="text-center">There are no examinations</h5>
+      <h3 class="text-center">Practitioners:</h3>
+      <h5 class="text-center">There are no practitioners</h5>
     </div>
   </div>
 </ng-template>

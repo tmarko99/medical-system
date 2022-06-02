@@ -17,6 +17,10 @@ export class PractitionerService {
     return this.httpClient.get<PageDto<Practitioner>>(`${environment.serverUrl}/api/practitioner?filter=${filter}&pageNumber=${page}&pageSize=${size}&sortField=${sortField}&sortDir=${sortDir}`);
   }
 
+  findAllNoPagination() {
+    return this.httpClient.get<PageDto<Practitioner>>(`${environment.serverUrl}/api/practitioner?filter`);
+  }
+
   findAllSimple(): Observable<Practitioner[]>{
     return this.httpClient.get<Practitioner[]>(`${environment.serverUrl}/api/practitioner/findAll`);
   }

@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthGuard } from 'src/app/core/guards/auth.guard';
+import { RoleGuard } from 'src/app/core/guards/role.guard';
 import { PageNotFoundComponent } from 'src/app/pages/page-not-found/page-not-found.component';
 import { OrganizationAddComponent } from './pages/organization-add/organization-add.component';
 import { OrganizationDetailsComponent } from './pages/organization-details/organization-details.component';

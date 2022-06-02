@@ -17,6 +17,11 @@ export class OrganizationService {
     return this.httpClient.get<PageDto<Organization>>(`${environment.serverUrl}/api/organization?filter=${filter}&pageNumber=${page}&pageSize=${size}&sortField=${sortField}&sortDir=${sortDir}`);
   }
 
+  findAllNoPagination(){
+    return this.httpClient.get<PageDto<Organization>>(`${environment.serverUrl}/api/organization`);
+  }
+
+
   findAllSimple(): Observable<Organization[]>{
     return this.httpClient.get<Organization[]>(`${environment.serverUrl}/api/organization/findAll`);
   }

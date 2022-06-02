@@ -39,6 +39,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse> handleGlobalException(Exception exception){
+        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, exception.getMessage());
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ApiResponse> handleMaxSizeException(MaxUploadSizeExceededException exc) {
         ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, exc.getMessage());

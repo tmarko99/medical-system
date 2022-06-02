@@ -1,5 +1,6 @@
 package it.engineering.repository;
 
+import it.engineering.dto.ExaminationDto;
 import it.engineering.entity.Examination;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

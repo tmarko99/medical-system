@@ -37,7 +37,7 @@
         <p class="card-text">Name: {{patient.name}}</p>
         <p class="card-text">Surname: {{patient.surname}}</p>
         <p class="card-text">Gender: {{patient.gender }}</p>
-        <p class="card-text">DoB: {{patient.birthDate }}</p>
+        <p class="card-text">DoB: {{patient.birthDate | date: 'mediumDate' }}</p>
         <p class="card-text">Address: {{patient.address }}</p>
         <p class="card-text">Phone: {{patient.phone }}</p>
         <p class="card-text">Email: {{patient.email}}</p>
@@ -59,8 +59,8 @@
          <p class="card-text">ServiceType: {{ examination.serviceType.name }}</p>
          <p class="card-text">Priority: {{examination.priority }}</p>
          <p class="card-text">Diagnosis: {{examination.diagnosis }}</p>
-         <p class="card-text">StartDate: {{examination.startDate }}</p>
-         <p class="card-text">EndDate: {{examination.endDate }}</p>
+         <p class="card-text">StartDate: {{examination.startDate | date: 'medium' }}</p>
+         <p class="card-text">EndDate: {{examination.endDate | date: 'medium' }}</p>
          <button [routerLink]="['/examination/examination-details/', examination.id]" class="btn btn-outline-success mr-3">View more</button>
        </div>
        <hr>
@@ -78,7 +78,7 @@
         <p class="card-text">Name: {{practitioner.name}}</p>
         <p class="card-text">Surname: {{practitioner.surname}}</p>
         <p class="card-text">Gender: {{practitioner.gender }}</p>
-        <p class="card-text">DoB: {{practitioner.birthDate }}</p>
+        <p class="card-text">DoB: {{practitioner.birthDate | date: 'mediumDate' }}</p>
         <p class="card-text">Qualification: {{practitioner.qualification }}</p>
         <p class="card-text">Address: {{practitioner.address }}</p>
         <p class="card-text">Phone: {{practitioner.phone }}</p>

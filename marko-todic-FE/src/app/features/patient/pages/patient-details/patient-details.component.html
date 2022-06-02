@@ -7,7 +7,7 @@
           <h4 class="card-title text">Identifier: {{ patient.identifier }}</h4>
           <p class="card-text">Active status: <b>{{ patient.active }}</b></p>
           <p class="card-text">Gender: {{ patient.gender }}</p>
-          <p class="card-text">DoB: {{ patient.birthDate }}</p>
+          <p class="card-text">DoB: {{ patient.birthDate | date: 'mediumDate' }}</p>
           <p class="card-text">Marital status: <b>{{ patient.maritalStatus }}</b></p>
           <p class="card-text">Number of examinations: <b>{{patient.examinations.length}}</b></p>
         </div>
@@ -26,7 +26,7 @@
           <h5 class="card-title text">Identifier: {{ patient.practitioner.identifier }}</h5>
           <p class="card-text">Active status: <b>{{ patient.practitioner.active }}</b></p>
           <p class="card-text">Gender: {{ patient.practitioner.gender }}</p>
-          <p class="card-text">DoB: {{ patient.practitioner.birthDate }}</p>
+          <p class="card-text">DoB: {{ patient.practitioner.birthDate | date: 'mediumDate' }}</p>
           <p class="card-text">Phone: {{ patient.practitioner.phone }}</p>
           <p class="card-text">Email: {{ patient.practitioner.email }}</p>
         </div>
@@ -61,8 +61,8 @@
             <p class="card-text">ServiceType: {{ examination.serviceType }}</p>
             <p class="card-text">Priority: {{examination.priority }}</p>
             <p class="card-text">Diagnosis: {{examination.diagnosis }}</p>
-            <p class="card-text">StartDate: {{examination.startDate }}</p>
-            <p class="card-text">EndDate: {{examination.endDate }}</p>
+            <p class="card-text">StartDate: {{examination.startDate | date: 'medium' }}</p>
+            <p class="card-text">EndDate: {{examination.endDate | date: 'medium' }}</p>
             <button [routerLink]="['/examination/examination-details/', examination.id]" class="btn btn-outline-success mr-3">View more</button>
           </div>
           <hr>

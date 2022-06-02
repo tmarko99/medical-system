@@ -9,11 +9,16 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
+import { LoginComponent } from './pages/login/login/login.component';
+import { NgxWebstorageModule } from 'ngx-webstorage';
+import { DashboardComponent } from './pages/dashboard/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    LoginComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -22,7 +27,8 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
     CoreModule,
     SharedModule,
     NgbModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    NgxWebstorageModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

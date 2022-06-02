@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthGuard } from 'src/app/core/guards/auth.guard';
+import { RoleGuard } from 'src/app/core/guards/role.guard';
 import { PatientAddComponent } from './pages/patient-add/patient-add.component';
 import { PatientDetailsComponent } from './pages/patient-details/patient-details.component';
 import { PatientEditComponent } from './pages/patient-edit/patient-edit.component';

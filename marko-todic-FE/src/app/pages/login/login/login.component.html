@@ -1,0 +1,28 @@
+<form  [formGroup]="loginForm"  *ngIf="loginForm">
+  <div class="mx-auto col-lg-6 col-md-8 mt-3 p-4">
+    <h2>Login</h2>
+    <div class="d-flex flex-column">
+      <label for="email">Email</label>
+      <input type="text" id="email" class="form-control" formControlName="email" >
+      <p class="alert alert-danger" *ngIf="hasErrors('email', 'required')">
+        Email is required
+      </p>
+      <p class="alert alert-danger" *ngIf="hasErrors('email', 'email')">
+        Email is in invalid format
+      </p>
+    </div>
+
+    <div class="d-flex flex-column">
+      <label for="password" >Password</label>
+      <input type="password" id="password"  class="form-control" formControlName="password" >
+      <p class="alert alert-danger" *ngIf="hasErrors('password', 'required')">
+        Password is required
+      </p>
+    </div>
+
+    <div class="d-flex flex-row-reverse mt-2">
+      <button class="btn btn-outline-primary" [disabled]="loginForm.invalid" (click)="login()">Login</button>
+    </div>
+  </div>
+</form>
+

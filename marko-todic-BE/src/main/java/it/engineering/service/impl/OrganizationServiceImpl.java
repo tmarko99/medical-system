@@ -5,6 +5,7 @@ import it.engineering.entity.*;
 import it.engineering.exception.BadRequestException;
 import it.engineering.exception.ResourceNotFoundException;
 import it.engineering.mapper.OrganizationMapper;
+import it.engineering.repository.ExaminationRepository;
 import it.engineering.repository.OrganizationRepository;
 import it.engineering.repository.PatientRepository;
 import it.engineering.repository.PractitionerRepository;
@@ -33,6 +34,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
     private PractitionerRepository practitionerRepository;
+
+    @Autowired
+    private ExaminationRepository examinationRepository;
 
     @Autowired
     private PatientRepository patientRepository;
@@ -167,6 +171,10 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         for(Patient patient : organization.getPatients()){
             patientRepository.delete(patient.getId());
+        }
+
+        for(Examination examination : organization.getExaminations()){
+            examinationRepository.delete(examination.getId());
         }
 
         organizationRepository.delete(id);

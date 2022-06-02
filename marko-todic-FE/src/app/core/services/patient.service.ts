@@ -18,6 +18,11 @@ export class PatientService {
     return this.httpClient.get<PageDto<Patient>>(`${environment.serverUrl}/api/patient?filter=${filter}&pageNumber=${page}&pageSize=${size}&sortField=${sortField}&sortDir=${sortDir}`);
   }
 
+  findAllNoPagination(){
+    return this.httpClient.get<PageDto<Patient>>(`${environment.serverUrl}/api/patient`);
+  }
+
+
   findAllSimple(): Observable<Patient[]>{
     return this.httpClient.get<Patient[]>(`${environment.serverUrl}/api/patient/findAll`);
   }
