@@ -63,7 +63,7 @@
             <p class="card-text">Diagnosis: {{examination.diagnosis }}</p>
             <p class="card-text">StartDate: {{examination.startDate | date: 'medium' }}</p>
             <p class="card-text">EndDate: {{examination.endDate | date: 'medium' }}</p>
-            <button [routerLink]="['/examination/examination-details/', examination.id]" class="btn btn-outline-success mr-3">View more</button>
+            <button *ngIf="roleName != 'ROLE_PATIENT'" [routerLink]="['/examination/examination-details/', examination.id]" class="btn btn-outline-success mr-3">View more</button>
           </div>
           <hr>
          </ng-container>

@@ -46,9 +46,9 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
         try {
             List<ServiceType> serviceTypes = CSVHelper.csvToServiceType(file.getInputStream());
             serviceTypeRepository.saveAll(serviceTypes);
-            return new ApiResponse(Boolean.TRUE, "Uploaded the file successfully");
+            return new ApiResponse(Boolean.TRUE, "Data inserted successfully");
         } catch (IOException e) {
-            throw new RuntimeException("fail to store csv data: " + e.getMessage());
+            throw new RuntimeException("Fail to store csv data: " + e.getMessage());
         }
     }
 

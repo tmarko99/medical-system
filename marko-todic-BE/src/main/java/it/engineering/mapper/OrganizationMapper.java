@@ -3,12 +3,9 @@ package it.engineering.mapper;
 import it.engineering.dto.OrganizationDto;
 import it.engineering.dto.OrganizationFullDto;
 import it.engineering.dto.OrganizationIdentifierNameDto;
-import it.engineering.entity.Organization;
-import it.engineering.entity.OrganizationType;
-import it.engineering.entity.Practitioner;
+import it.engineering.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
@@ -21,8 +18,8 @@ public interface OrganizationMapper {
     Organization toEntity(OrganizationDto organizationDto);
 
     @Mapping(target = "numberOfPractitioners", expression = "java(getActiveNumberOfPractitioners(organization.getPractitioners()))")
-    @Mapping(target = "numberOfPatients", expression = "java(organization.getPatients() != null ? organization.getPatients().size() : 0)")
-    @Mapping(target = "numberOfExaminations", expression = "java(organization.getExaminations() != null ? organization.getExaminations().size() : 0)")
+    @Mapping(target = "numberOfPatients", expression = "java(getActiveNumberOfPatients(organization.getPatients()))")
+    @Mapping(target = "numberOfExaminations", expression = "java(getValidNumberOfExaminations(organization.getExaminations()))")
     OrganizationDto toDto(Organization organization);
 
     OrganizationIdentifierNameDto toSimpleDto(Organization organization);
@@ -34,6 +31,14 @@ public interface OrganizationMapper {
 
     default OrganizationType getOrganizationType(String type){
         return OrganizationType.fromString(type);
+    }
+
+    default Integer getValidNumberOfExaminations(List<Examination> examinations){
+        return Math.toIntExact(examinations.stream().filter(examination -> !examination.getStatus().equals(Status.ENTERED_IN_ERROR)).count());
+    }
+
+    default Integer getActiveNumberOfPatients(List<Patient> patients){
+        return Math.toIntExact(patients.stream().filter(patient -> patient.getActive().equals(true)).count());
     }
 
     default Integer getActiveNumberOfPractitioners(List<Practitioner> practitioners){

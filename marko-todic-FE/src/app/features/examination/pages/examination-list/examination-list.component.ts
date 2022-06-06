@@ -31,7 +31,6 @@ export class ExaminationListComponent implements OnInit {
   examinations: Examination[] = [];
   statuses = Status;
   priorities = Priority;
-
   organizations: Organization[] = [];
   patients: Patient[] = [];
   serviceTypes: ServiceType[] = [];
@@ -61,7 +60,6 @@ export class ExaminationListComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
-
     this.roleName = this.authService.getUserRole();
 
     this.organizationService.findAllSimple().subscribe(organizations => {
@@ -102,8 +100,16 @@ export class ExaminationListComponent implements OnInit {
         this.serviceType.findById(Number(examination.serviceType)).subscribe(serviceType => {
           examination.serviceType = serviceType.name;
         })
+        this.findPatientNameByExaminationId(examination.id);
       })
     })
+  }
+
+  findPatientNameByExaminationId(id: number){
+    const examination = this.examinations.find(examination => examination.id === id);
+    const patient = this.patients.find(patient => patient.id === examination.patient);
+
+    return patient.name;
   }
 
   selectFile(event) {
@@ -116,9 +122,8 @@ export class ExaminationListComponent implements OnInit {
     this.serviceType.upload(this.selectedFile).subscribe(() => {
       this.toastr.success("Uploaded the file successfully");
       this.selectedFile = undefined;
+      this.findAll();
     })
-
-
   }
 
   onPageChange() {
@@ -209,6 +214,7 @@ export class ExaminationListComponent implements OnInit {
   deleteSelectedExamination(id: number){
     this.examinationService.delete(id).subscribe(() => {
       this.toastr.success("Examination deleted successfully");
+      this.findAll();
     })
   }
 

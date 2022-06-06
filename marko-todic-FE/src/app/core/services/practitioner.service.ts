@@ -47,7 +47,7 @@ export class PractitionerService {
   }
 
   delete(id: number){
-    return this.httpClient.put(`${environment.serverUrl}/api/practitioner/delete${id}`, '');
+    return this.httpClient.put(`${environment.serverUrl}/api/practitioner/delete/${id}`, '');
   }
 
 }

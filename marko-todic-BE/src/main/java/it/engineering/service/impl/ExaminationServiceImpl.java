@@ -10,6 +10,7 @@ import it.engineering.service.ExaminationService;
 import it.engineering.specification.ExaminationSpecification;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -57,7 +58,9 @@ public class ExaminationServiceImpl implements ExaminationService {
 
         Page<Examination> examinations = examinationRepository.findAll(examinationSpecification.getExaminations(filterDto), pageable);
 
-        List<Examination> examinationList = examinations.getContent();
+        List<Examination> examinationList = examinations.getContent().stream()
+                .filter(examination -> !examination.getStatus().equals(Status.ENTERED_IN_ERROR))
+                .collect(Collectors.toList());
 
         List<ExaminationDto> examinationDtos = examinationList.stream().map(examination -> examinationMapper.toDto(examination))
                 .collect(Collectors.toList());
@@ -124,9 +127,12 @@ public class ExaminationServiceImpl implements ExaminationService {
         examination.setPractitioners(practitioners);
         examination.setPatient(patient);
 
-        Examination savedExamination = examinationRepository.save(examination);
-
-        return examinationMapper.toDto(savedExamination);
+        try {
+            Examination savedExamination = examinationRepository.save(examination);
+            return examinationMapper.toDto(savedExamination);
+        }catch (DataIntegrityViolationException exception){
+            throw new DataIntegrityViolationException("Already exists entity with the same identifier");
+        }
     }
 
     @Override
@@ -164,9 +170,12 @@ public class ExaminationServiceImpl implements ExaminationService {
         examination.setPractitioners(practitioners);
         examination.setPatient(patient);
 
-        Examination updatedExamination = examinationRepository.save(examination);
-
-        return examinationMapper.toDto(updatedExamination);
+        try {
+            Examination updatedExamination = examinationRepository.save(examination);
+            return examinationMapper.toDto(updatedExamination);
+        }catch (DataIntegrityViolationException exception){
+            throw new DataIntegrityViolationException("Already exists entity with the same identifier");
+        }
     }
 
     @Override
@@ -179,8 +188,8 @@ public class ExaminationServiceImpl implements ExaminationService {
 
         ApiResponse apiResponse;
 
-        if(examination.getStartDate().after(Date.from(instant))
-                || examination.getEndDate().after(Date.from(instant))){
+        if(examination.getStartDate().before(Date.from(instant))
+                && examination.getEndDate().after(Date.from(instant))){
             apiResponse = new ApiResponse(Boolean.FALSE, "You cannot delete an examination because is not completed");
             throw new BadRequestException(apiResponse);
         }

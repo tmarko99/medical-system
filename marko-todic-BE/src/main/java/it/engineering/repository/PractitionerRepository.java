@@ -19,7 +19,8 @@ public interface PractitionerRepository extends JpaRepository<Practitioner, Inte
     @Query("SELECT p FROM Practitioner p WHERE p.active=true AND p.organization.active=true")
     Page<Practitioner> findAll(Pageable pageable);
 
-    List<Practitioner> findAllByOrganizationId(Integer id);
+    @Query("SELECT p FROM Practitioner p WHERE p.active=true AND p.organization.id=:id")
+    List<Practitioner> findAllByOrganizationId(@Param("id") Integer id);
 
     @Query("SELECT p FROM Practitioner p WHERE p.active=true")
     List<Practitioner> findAll();

@@ -4,7 +4,7 @@
       <label for="identifier">Identifier</label>
       <input type="text" class="form-control" formControlName="identifier">
       <p class="alert alert-danger" *ngIf="hasErrors('identifier', 'required')">
-        Name is required
+        Identifier is required
       </p>
       <p class="alert alert-danger" *ngIf="hasErrors('identifier', 'minlength')">
         Min length is {{ addForm.get('identifier').errors.minlength.requiredLength }} characters

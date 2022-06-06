@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { Gender } from 'src/app/core/models/gender';
 import { Organization } from 'src/app/core/models/organization';
 import { Practitioner } from 'src/app/core/models/practitioner';

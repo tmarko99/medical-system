@@ -16,6 +16,7 @@ public class ExaminationSpecification {
     public Specification<Examination> getExaminations(FilterDto filterDto){
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+
             if(filterDto.getOrganization() != null){
                 predicates.add(criteriaBuilder.equal(root.get("organization"), filterDto.getOrganization()));
             }

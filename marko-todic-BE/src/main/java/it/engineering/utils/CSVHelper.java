@@ -38,7 +38,7 @@ public class CSVHelper {
 
             return serviceTypes;
         } catch (IOException e) {
-            throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
+            throw new RuntimeException("Fail to parse CSV file: " + e.getMessage());
         }
     }
 }

@@ -54,6 +54,9 @@
     <div class="d-flex flex-column">
       <label for="endDate">End Date</label>
       <input id="endDate" type="datetime-local" class="form-control" formControlName="endDate">
+      <p class="alert alert-danger" *ngIf="endDateBeforeStartDate() && this.editForm.get('endDate').touched">
+        End date cannot be before the start date
+      </p>
     </div>
 
 

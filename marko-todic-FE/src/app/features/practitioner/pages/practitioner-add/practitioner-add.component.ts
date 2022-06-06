@@ -54,8 +54,9 @@ export class PractitionerAddComponent implements OnInit {
 
   save(){
     const practitioner = this.addForm.getRawValue();
+
     this.practitionerService.save(practitioner).subscribe(() => {
       this.router.navigate(['/practitioner'], {queryParams: {created: 'true'}});
-    });
-  }
+    })
+}
 }

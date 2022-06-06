@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from 'src/app/core/guards/auth.guard';
-import { RoleGuard } from 'src/app/core/guards/role.guard';
 import { PractitionerAddComponent } from './pages/practitioner-add/practitioner-add.component';
 import { PractitionerDetailsComponent } from './pages/practitioner-details/practitioner-details.component';
 import { PractitionerEditComponent } from './pages/practitioner-edit/practitioner-edit.component';

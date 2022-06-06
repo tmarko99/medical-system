@@ -6,7 +6,6 @@ import it.engineering.dto.PractitionerSimpleDto;
 import it.engineering.entity.Practitioner;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
 @Mapper(uses= { PatientMapper.class, ExaminationMapper.class })
 public interface PractitionerMapper {

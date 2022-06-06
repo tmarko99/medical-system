@@ -1,6 +1,7 @@
 package it.engineering.exception;
 
 import it.engineering.dto.ApiResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +13,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -30,6 +30,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ApiResponse apiResponse = exception.getApiResponse();
 
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse> handlePreconditionFailed(DataIntegrityViolationException exception) {
+        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, exception.getMessage());
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(SQLException.class)
@@ -70,6 +77,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         body.put("errors", errorsList);
 
         return new ResponseEntity<>(body, status);
-
     }
 }

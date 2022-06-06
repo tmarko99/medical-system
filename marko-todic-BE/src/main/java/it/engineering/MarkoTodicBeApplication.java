@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @SpringBootApplication
 public class MarkoTodicBeApplication implements CommandLineRunner {
@@ -30,14 +31,12 @@ public class MarkoTodicBeApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-//		Role role = new Role();
-//		role.setName("ROLE_ADMIN");
-//		roleRepository.save(role);
+//		Optional<Role> role = roleRepository.findById(2);
 //
 //		User user = new User();
-//		user.setEmail("radnik1@mail.com");
-//		user.setPassword(bCryptPasswordEncoder.encode("radnik1"));
-//		user.setRoles(Collections.singleton(role));
+//		user.setEmail("jody@gmail.com");
+//		user.setPassword(bCryptPasswordEncoder.encode("jody"));
+//		user.setRoles(Collections.singleton(role.get()));
 //
 //		userRepository.save(user);
 	}

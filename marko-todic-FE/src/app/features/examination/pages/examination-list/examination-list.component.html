@@ -40,7 +40,7 @@
         <select class="custom-select" formControlName="organization">
           <option value="">Any organization</option>
           <option *ngFor="let organization of organizations" [ngValue]="organization.id">
-            {{ organization.identifier }} - {{ organization.name }}
+            {{ organization.identifier }} - {{ organization.name | slice:0:20 }}{{ organization.name.length > 20 ? '...' : '' }}
           </option>
         </select>
       </div>
@@ -52,7 +52,7 @@
           </option>
         </select>
       </div>
-      <div class="mb-4 mr-3">
+      <div class="mb-4">
         <select class="custom-select" formControlName="serviceType">
           <option value="">Any Service type</option>
           <option *ngFor="let serviceType of serviceTypes" [ngValue]="serviceType.id">
@@ -61,7 +61,7 @@
         </select>
       </div>
 
-      <div class="mb-4">
+      <div class="mb-4 mx-auto">
         <button (click)="filter()" class="btn btn-primary">Filter</button>
       </div>
   </div>
@@ -73,20 +73,19 @@
     <thead>
     <tr>
       <th sortable="id" (sort)="onSort($event)" scope="col">Id</th>
-      <th>Identifier</th>
+      <th>Patient name</th>
       <th sortable="status" (sort)="onSort($event)" scope="col">Status</th>
       <th sortable="serviceType" (sort)="onSort($event)" scope="col">Service Type</th>
       <th sortable="priority" (sort)="onSort($event)" scope="col">Priority</th>
       <th sortable="startDate" (sort)="onSort($event)" scope="col">Start date</th>
       <th sortable="endDate" (sort)="onSort($event)" scope="col">End date</th>
-      <th>Diagnosis</th>
       <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let examination of examinations">
       <td>{{ examination.id }}</td>
-      <td>{{ examination.identifier }}</td>
+      <td>{{ findPatientNameByExaminationId(examination.id) }}</td>
       <td>
         <span [ngClass]="getBadgeColorStatus(examination.status)">{{ examination.status }}</span>
       </td>
@@ -96,11 +95,10 @@
       </td>
       <td>{{ examination.startDate | date: 'short' }}</td>
       <td>{{ examination.endDate | date: 'short' }}</td>
-      <td>{{ examination.diagnosis }}</td>
       <td>
         <button [routerLink]="['/examination/examination-details/', examination.id]" class="btn btn-outline-warning mr-3">View</button>
         <button [routerLink]="['/examination/examination-edit/', examination.id]" class="btn btn-outline-success mr-3">Edit</button>
-        <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(examination)">Delete</button>
+        <button class="btn btn-outline-danger" (click)="onDeleteClick(examination)">Delete</button>
       </td>
     </tr>
     </tbody>

@@ -19,7 +19,8 @@ public interface PatientRepository extends JpaRepository<Patient, Integer> {
     @Query("SELECT p FROM Patient p WHERE p.active=true AND p.organization.active=true")
     Page<Patient> findAll(Pageable pageable);
 
-    List<Patient> findAllByOrganizationId(Integer id);
+    @Query("SELECT p FROM Patient p WHERE p.active=true AND p.organization.id=:id")
+    List<Patient> findAllByOrganizationId(@Param("id") Integer id);
 
     @Query("SELECT p FROM Patient p WHERE p.active=true")
     List<Patient> findAll();
@@ -32,4 +33,9 @@ public interface PatientRepository extends JpaRepository<Patient, Integer> {
     @Modifying
     @Transactional
     void delete(@Param("id") Integer id);
+
+    @Query("UPDATE Patient p SET p.practitioner=null WHERE p.id=:id")
+    @Modifying
+    @Transactional
+    void setUnassigned(@Param("id") Integer id);
 }

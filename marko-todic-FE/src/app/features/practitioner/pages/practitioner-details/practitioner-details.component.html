@@ -21,7 +21,7 @@
           <h6 class="card-text">Address: {{practitoner.address}}</h6>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4" *ngIf="practitoner.organization">
         <div class="card-body bg-info">
           <h4 class="card-title text">Organization info: {{ practitoner.organization.name }}</h4>
           <h5 class="card-title text">Identifier: {{ practitoner.organization.identifier }}</h5>

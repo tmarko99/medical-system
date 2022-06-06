@@ -31,8 +31,8 @@ public class ServiceTypeController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ApiResponse> uploadFile(@RequestParam("file")MultipartFile file) {
-        String message = "";
+    public ResponseEntity<ApiResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+        String message;
 
         if (CSVHelper.hasCSVFormat(file)) {
             try {

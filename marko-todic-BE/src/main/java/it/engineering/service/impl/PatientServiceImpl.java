@@ -5,7 +5,6 @@ import it.engineering.entity.*;
 import it.engineering.exception.BadRequestException;
 import it.engineering.exception.ResourceNotFoundException;
 import it.engineering.mapper.PatientMapper;
-import it.engineering.repository.ExaminationRepository;
 import it.engineering.repository.OrganizationRepository;
 import it.engineering.repository.PatientRepository;
 import it.engineering.repository.PractitionerRepository;
@@ -13,13 +12,19 @@ import it.engineering.service.PatientService;
 import it.engineering.service.PractitionerService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,9 +42,6 @@ public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
-
-    @Autowired
-    private ExaminationRepository examinationRepository;
 
     private final PatientMapper patientMapper = Mappers.getMapper(PatientMapper.class);
 
@@ -113,9 +115,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientSimpleDto save(PatientSimpleDto patientSimpleDto) {
-        PractitionerFullDto practitioner = practitionerService.findByIdView(patientSimpleDto.getPractitioner());
-
-//        OrganizationDto organization = organizationService.findById(patientSimpleDto.getOrganization());
+        PractitionerSimpleDto practitioner = practitionerService.findByIdSimple(patientSimpleDto.getPractitioner());
 
         if(!practitioner.getQualification().equals(Qualification.DOCTOR_OF_MEDICINE)){
             ApiResponse apiResponse =
@@ -123,9 +123,12 @@ public class PatientServiceImpl implements PatientService {
             throw new BadRequestException(apiResponse);
         }
 
-        Patient patient = patientRepository.save(patientMapper.toEntity(patientSimpleDto));
-
-        return patientMapper.toDto(patient);
+        try {
+            Patient patient = patientRepository.save(patientMapper.toEntity(patientSimpleDto));
+            return patientMapper.toDto(patient);
+        }catch (DataIntegrityViolationException exception){
+            throw new DataIntegrityViolationException("Already exists entity with the same identifier");
+        }
     }
 
     @Override
@@ -139,18 +142,6 @@ public class PatientServiceImpl implements PatientService {
         Practitioner practitioner = practitionerRepository.findById(patientSimpleDto.getPractitioner())
                 .orElseThrow(() -> new ResourceNotFoundException("Practitioner", "id", id));
 
-
-        List<Patient> patients = patientRepository.findAll();
-
-        // number of found patients who have the same identifier as an inserted value
-        long count = patients.stream()
-                .filter(pat -> pat.getIdentifier().equalsIgnoreCase(patientSimpleDto.getIdentifier()))
-                .count();
-
-        if(count > 1){
-            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Already exists entry with same identifier");
-            throw new BadRequestException(apiResponse);
-        }
 
         if(!practitioner.getQualification().equals(Qualification.DOCTOR_OF_MEDICINE)){
             ApiResponse apiResponse =
@@ -171,9 +162,13 @@ public class PatientServiceImpl implements PatientService {
         patient.setPractitioner(practitioner);
         patient.setOrganization(organization);
 
-        Patient updatedPatient = patientRepository.save(patient);
+        try {
+            Patient updatedPatient = patientRepository.save(patient);
+            return patientMapper.toDto(updatedPatient);
+        }catch (DataIntegrityViolationException exception){
+            throw new DataIntegrityViolationException("Already exists entity with the same identifier");
+        }
 
-        return patientMapper.toDto(updatedPatient);
     }
 
     @Override
@@ -190,11 +185,18 @@ public class PatientServiceImpl implements PatientService {
             throw new BadRequestException(apiResponse);
         }
 
-        for(Examination examination : patient.getExaminations()){
-            examinationRepository.delete(examination.getId());
+        LocalDateTime currentTime = LocalDateTime.now();
+        Instant instant = Timestamp.valueOf(currentTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).toInstant();
+
+        ApiResponse apiResponse;
+
+        if(patient.getExaminations().stream().map(examination -> examination.getStartDate().before(Date.from(instant))).count() > 0
+            && patient.getExaminations().stream().map(examination -> examination.getStartDate().after(Date.from(instant))).count() > 0){
+            apiResponse = new ApiResponse(Boolean.FALSE, "you cannot delete a patient because there are examinations in executing faze");
+            throw new BadRequestException(apiResponse);
         }
 
-        practitionerRepository.delete(id);
+        patientRepository.delete(id);
 
         return new ApiResponse(Boolean.TRUE, "Patient with id: " + id + " deleted successfully");
     }

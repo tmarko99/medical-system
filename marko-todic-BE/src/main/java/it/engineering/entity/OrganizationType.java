@@ -25,16 +25,6 @@ public enum OrganizationType {
         this.fullName = fullName;
     }
 
-//    @JsonCreator
-//    public static OrganizationType valueOfName(String label) {
-//        for (OrganizationType type : values()) {
-//            if (type.fullName.equals(label)) {
-//                return type;
-//            }
-//        }
-//        return null;
-//    }
-
     @JsonCreator // This is the factory method and must be static
     public static OrganizationType fromString(String string) {
         return Optional.ofNullable(FORMAT_MAP.get(string)).orElseGet(() -> OrganizationType.valueOf(string));

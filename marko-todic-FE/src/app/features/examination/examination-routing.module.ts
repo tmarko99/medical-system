@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from 'src/app/core/guards/auth.guard';
-import { RoleGuard } from 'src/app/core/guards/role.guard';
 import { ExaminationAddComponent } from './pages/examination-add/examination-add.component';
 import { ExaminationDetailsComponent } from './pages/examination-details/examination-details.component';
 import { ExaminationEditComponent } from './pages/examination-edit/examination-edit.component';

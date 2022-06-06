@@ -36,25 +36,23 @@ public class OrganizationServiceImpl implements OrganizationService {
     private PractitionerRepository practitionerRepository;
 
     @Autowired
-    private ExaminationRepository examinationRepository;
-
-    @Autowired
     private PatientRepository patientRepository;
 
     private final OrganizationMapper organizationMapper = Mappers.getMapper(OrganizationMapper.class);
 
     @Override
     public OrganizationDto save(OrganizationDto organizationDto) {
-//        Organization organization = new Organization();
-//
-//        organization.setIdentifier(organizationDto.getIdentifier());
-//        organization.setActive(organizationDto.getActive());
-//        organization.setType(organizationDto.getType());
-//        organization.setName(organizationDto.getName());
-//        organization.setAddress(organizationDto.getAddress());
-//        organization.setPhone(organizationDto.getPhone());
-//        organization.setEmail(organizationDto.getEmail());
+        List<Organization> organizations = organizationRepository.findAll();
 
+        long count = organizations.stream().filter(org -> org.getIdentifier().equalsIgnoreCase(organizationDto.getIdentifier()) ||
+                org.getName().equalsIgnoreCase(organizationDto.getName())).count();
+
+
+        //if the count is greater than 0 already exists an entry with the same identifier and name
+        if(count > 0){
+            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Entity with the same identifier or name already exists");
+            throw new BadRequestException(apiResponse);
+        }
         Organization organization = organizationRepository.save(organizationMapper.toEntity(organizationDto));
 
         return organizationMapper.toDto(organization);
@@ -132,8 +130,9 @@ public class OrganizationServiceImpl implements OrganizationService {
                 org.getName().equalsIgnoreCase(newOrganization.getName())).count();
 
 
+        //if the count is greater than 1 already exists an entry with the same identifier and name
         if(count > 1){
-            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Duplicate entry");
+            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Entry with the same identifier or name already exists");
             throw new BadRequestException(apiResponse);
         }
 
@@ -159,6 +158,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         long numberOfExaminations = organization.getExaminations().stream()
                 .filter(examination -> examination.getStatus().equals(Status.IN_PROGRESS)).count();
 
+        //if already exists opened examinations for this organization then could not be the organization deleted
         if(numberOfExaminations > 0){
             ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Cannot delete organization because there are examinations in the RUNNING state");
             throw new BadRequestException(apiResponse);
@@ -171,10 +171,6 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         for(Patient patient : organization.getPatients()){
             patientRepository.delete(patient.getId());
-        }
-
-        for(Examination examination : organization.getExaminations()){
-            examinationRepository.delete(examination.getId());
         }
 
         organizationRepository.delete(id);

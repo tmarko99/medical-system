@@ -30,10 +30,12 @@ public class Organization {
     private String address;
     private String phone;
     private String email;
-    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "organization")
+    //this annotation is used to prevent infinite-recursion
     @JsonBackReference
     private List<Practitioner> practitioners = new ArrayList<>();
     @OneToMany(mappedBy = "organization")
+    //this annotation is used to prevent infinite-recursion
     @JsonBackReference
     private List<Patient> patients = new ArrayList<>();
     @OneToMany(mappedBy = "organization")

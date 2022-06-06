@@ -1,5 +1,4 @@
 import { Priority } from "./priority";
-import { ServiceType } from "./service-type";
 import { Status } from "./status";
 
 export interface Filter {

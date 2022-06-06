@@ -45,14 +45,14 @@
       <td>
         <span [ngClass]="getBadgeColor(organization.type)">{{ organization.type }}</span>
       </td>
-      <td>{{ organization.name }}</td>
-      <td>{{ organization.address }}</td>
+      <td>{{ organization.name | slice:0:15 }}{{ organization.name.length > 15 ? '...' : '' }}</td>
+      <td>{{ organization.address | slice:0:15 }}{{ organization.address.length > 15 ? '...' : '' }}</td>
       <td>{{ organization.phone }}</td>
       <td>{{ organization.email }}</td>
       <td>
         <button [routerLink]="['/organization/organization-details/', organization.id]" class="btn btn-outline-warning mr-3">View</button>
         <button [routerLink]="['/organization/organization-edit/', organization.id]" class="btn btn-outline-success mr-3">Edit</button>
-        <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(organization)">Delete</button>
+        <button class="btn btn-outline-danger" (click)="onDeleteClick(organization)">Delete</button>
       </td>
     </tr>
     </tbody>

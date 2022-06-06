@@ -10,14 +10,18 @@ import it.engineering.repository.PractitionerRepository;
 import it.engineering.service.PractitionerService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EnumType;
+import javax.transaction.Transactional;
+import javax.validation.ConstraintViolationException;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -105,26 +109,19 @@ public class PractitionerServiceImpl implements PractitionerService {
     }
 
     @Override
-    public PractitionerSimpleDto save(PractitionerSimpleDto practitionerSimpleDto) {
-        Practitioner practitioner = practitionerRepository.save(practitionerMapper.toEntity(practitionerSimpleDto));
-
-        return practitionerMapper.toDto(practitioner);
+    public PractitionerSimpleDto save(PractitionerSimpleDto practitionerSimpleDto){
+        try {
+            Practitioner practitioner = practitionerRepository.save(practitionerMapper.toEntity(practitionerSimpleDto));
+            return practitionerMapper.toDto(practitioner);
+        }catch (DataIntegrityViolationException exception){
+            throw new DataIntegrityViolationException("Already exists entity with the same identifier");
+        }
     }
 
     @Override
     public PractitionerSimpleDto update(Integer id, PractitionerSimpleDto practitionerSimpleDto) {
         Practitioner practitioner = practitionerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Practitioner", "id", id));
-
-        List<Practitioner> practitioners = practitionerRepository.findAll();
-
-        long count = practitioners.stream().filter(pract -> pract.getIdentifier()
-                .equalsIgnoreCase(practitionerSimpleDto.getIdentifier())).count();
-
-        if(count > 1){
-            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Already exists entry with same identifier");
-            throw new BadRequestException(apiResponse);
-        }
 
         practitioner.setIdentifier(practitionerSimpleDto.getIdentifier());
         practitioner.setActive(practitionerSimpleDto.getActive());
@@ -138,9 +135,12 @@ public class PractitionerServiceImpl implements PractitionerService {
         practitioner.setQualification(practitionerSimpleDto.getQualification());
 
 
-        Practitioner updatedPractitioner = practitionerRepository.save(practitioner);
-
-        return practitionerMapper.toDto(updatedPractitioner);
+        try {
+            Practitioner updatedPractitioner = practitionerRepository.save(practitioner);
+            return practitionerMapper.toDto(updatedPractitioner);
+        }catch (DataIntegrityViolationException exception){
+            throw new DataIntegrityViolationException("Already exists entity with the same identifier");
+        }
     }
 
     @Override
@@ -153,12 +153,12 @@ public class PractitionerServiceImpl implements PractitionerService {
 
         if(numberOfExaminations > 0){
             ApiResponse apiResponse =
-                    new ApiResponse(Boolean.FALSE, "Cannot delete practitioner because there are examinations in the RUNNING state");
+                    new ApiResponse(Boolean.FALSE, "Cannot delete practitioner because there are examinations in the RUNNING state by this practitioner");
             throw new BadRequestException(apiResponse);
         }
 
         for (Patient patient : practitioner.getPatients()){
-            this.patientRepository.delete(patient.getId());
+            this.patientRepository.setUnassigned(patient.getId());
         }
 
         practitionerRepository.delete(id);

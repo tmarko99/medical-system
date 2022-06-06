@@ -24,7 +24,7 @@ export class OrganizationListComponent implements OnInit {
   currentPage = 1;
   totalItems = 10;
   pageSize = 5;
-  sortField:string = 'name';
+  sortField: string = 'name';
   sortDir: string = 'asc';
   availablePageSize = [2, 5, 10, 15, 20];
 
@@ -79,7 +79,7 @@ export class OrganizationListComponent implements OnInit {
   onSort(sortEvent: SortEvent) {
     this.sortField = sortEvent.column;
     this.sortDir = sortEvent.direction;
-    this.headers.forEach( header => {
+    this.headers.forEach(header => {
       if (header.sortable !== sortEvent.column) {
         header.direction = '';
       }

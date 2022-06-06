@@ -113,7 +113,7 @@ export class DashboardComponent implements OnInit {
     this.practitionerService.findAllNoPagination().subscribe(practitioners => {
       this.practitioners = practitioners.content;
 
-      this.qualificationNames = this.practitioners.map((practitioner) => practitioner.qualification);
+      this.qualificationNames = [...new Set(this.practitioners.map((practitioner) => practitioner.qualification))];
 
       let practitionerQualifications = [
         {name: 'DOCTOR_OF_MEDICINE', value: 0},
@@ -125,7 +125,7 @@ export class DashboardComponent implements OnInit {
       ]
 
       this.practitioners.map((practitioner) => {
-        let qualification= practitioner.qualification;
+        let qualification = practitioner.qualification;
         practitionerQualifications.forEach(title => {
           if(title.name === qualification){
             title.value++;

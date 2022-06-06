@@ -57,7 +57,7 @@ public class PractitionerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PractitionerSimpleDto> update(@PathVariable("id") Integer id,
-                                                      @Valid @RequestBody PractitionerSimpleDto practitionerSimpleDto){
+                                                        @Valid @RequestBody PractitionerSimpleDto practitionerSimpleDto) {
         return new ResponseEntity<>(practitionerService.update(id, practitionerSimpleDto), HttpStatus.CREATED);
     }
 

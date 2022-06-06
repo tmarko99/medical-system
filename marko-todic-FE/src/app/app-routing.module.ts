@@ -31,7 +31,8 @@ const routes: Routes = [
       data: {
         roles: [
           { authority: 'ROLE_ADMIN'},
-          { authority: 'ROLE_PATIENT'}
+          { authority: 'ROLE_PATIENT'},
+          { authority: 'ROLE_PRACTITIONER'}
         ]
       },
     loadChildren: () => import('./features/patient/patient.module').then((m) => m.PatientModule)

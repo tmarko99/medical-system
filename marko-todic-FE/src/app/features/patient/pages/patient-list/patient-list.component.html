@@ -13,9 +13,9 @@
       <input type="text" class="form-control" ngModel matInput placeholder="Search" name="search" search #searchInput="ngModel"
         [(ngModel)]="searchValue" (keyup)="search()">
     </div>
-    <div class="d-flex justify-content-center col-lg-5 mb-4">
-      <select class="custom-select col-lg-4" [(ngModel)]="maritalStatusValue" ngModel (change)="search()">
-        <option value="">Any gender</option>
+    <div class="d-flex justify-content-center mb-4">
+      <select class="custom-select" [(ngModel)]="maritalStatusValue" ngModel (change)="search()">
+        <option value="">Any marital status</option>
         <option *ngFor="let ms of maritalStatus | keyvalue" [value]="ms.key">
           {{ ms.value }}
         </option>
@@ -56,7 +56,7 @@
       <td>
         <button [routerLink]="['/patient/patient-details/', patient.id]" class="btn btn-outline-warning mr-3">View</button>
         <button [routerLink]="['/patient/patient-edit/', patient.id]" class="btn btn-outline-success mr-3">Edit</button>
-        <button class="btn btn-outline-danger mr-3" (click)="onDeleteClick(patient)">Delete</button>
+        <button class="btn btn-outline-danger" (click)="onDeleteClick(patient)">Delete</button>
       </td>
     </tr>
     </tbody>

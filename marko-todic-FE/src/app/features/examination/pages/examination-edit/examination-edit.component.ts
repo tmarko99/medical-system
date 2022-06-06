@@ -106,5 +106,12 @@ export class ExaminationEditComponent implements OnInit {
     })
   }
 
+  endDateBeforeStartDate(){
+    let startDate = this.editForm.get('startDate').value;
+    let endDate = this.editForm.get('endDate').value;
+
+    return endDate < startDate;
+  }
+
 
 }
