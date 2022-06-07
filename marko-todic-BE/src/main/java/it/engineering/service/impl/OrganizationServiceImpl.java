@@ -22,7 +22,12 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.ReadOnlyFileSystemException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -158,9 +163,20 @@ public class OrganizationServiceImpl implements OrganizationService {
         long numberOfExaminations = organization.getExaminations().stream()
                 .filter(examination -> examination.getStatus().equals(Status.IN_PROGRESS)).count();
 
+        ApiResponse apiResponse;
+
         //if already exists opened examinations for this organization then could not be the organization deleted
         if(numberOfExaminations > 0){
-            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Cannot delete organization because there are examinations in the RUNNING state");
+            apiResponse = new ApiResponse(Boolean.FALSE, "Cannot delete organization because there are examinations in the RUNNING state");
+            throw new BadRequestException(apiResponse);
+        }
+
+        LocalDateTime currentTime = LocalDateTime.now();
+        Instant instant = Timestamp.valueOf(currentTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).toInstant();
+
+        if(organization.getExaminations().stream().map(examination -> examination.getStartDate().before(Date.from(instant))).count() > 0
+                && organization.getExaminations().stream().map(examination -> examination.getStartDate().after(Date.from(instant))).count() > 0){
+            apiResponse = new ApiResponse(Boolean.FALSE, "You cannot delete a organization because there are examinations in executing phase");
             throw new BadRequestException(apiResponse);
         }
 
