@@ -179,8 +179,10 @@ public class PatientServiceImpl implements PatientService {
         long numberOfExaminations = patient.getExaminations().stream()
                 .filter(examination -> examination.getStatus().equals(Status.IN_PROGRESS)).count();
 
+        ApiResponse apiResponse;
+
         if(numberOfExaminations > 0){
-            ApiResponse apiResponse =
+             apiResponse =
                     new ApiResponse(Boolean.FALSE, "Cannot delete patient because there are examinations in the RUNNING state");
             throw new BadRequestException(apiResponse);
         }
@@ -188,11 +190,9 @@ public class PatientServiceImpl implements PatientService {
         LocalDateTime currentTime = LocalDateTime.now();
         Instant instant = Timestamp.valueOf(currentTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).toInstant();
 
-        ApiResponse apiResponse;
-
         if(patient.getExaminations().stream().map(examination -> examination.getStartDate().before(Date.from(instant))).count() > 0
             && patient.getExaminations().stream().map(examination -> examination.getStartDate().after(Date.from(instant))).count() > 0){
-            apiResponse = new ApiResponse(Boolean.FALSE, "you cannot delete a patient because there are examinations in executing faze");
+            apiResponse = new ApiResponse(Boolean.FALSE, "you cannot delete a patient because there are examinations in executing phase");
             throw new BadRequestException(apiResponse);
         }
 
