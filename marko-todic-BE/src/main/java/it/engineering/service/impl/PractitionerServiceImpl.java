@@ -20,8 +20,13 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,9 +156,20 @@ public class PractitionerServiceImpl implements PractitionerService {
         long numberOfExaminations = practitioner.getExaminations().stream()
                 .filter(examination -> examination.getStatus().equals(Status.IN_PROGRESS)).count();
 
+        ApiResponse apiResponse;
+
         if(numberOfExaminations > 0){
-            ApiResponse apiResponse =
+            apiResponse =
                     new ApiResponse(Boolean.FALSE, "Cannot delete practitioner because there are examinations in the RUNNING state by this practitioner");
+            throw new BadRequestException(apiResponse);
+        }
+
+        LocalDateTime currentTime = LocalDateTime.now();
+        Instant instant = Timestamp.valueOf(currentTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).toInstant();
+
+        if(practitioner.getExaminations().stream().map(examination -> examination.getStartDate().before(Date.from(instant))).count() > 0
+                && practitioner.getExaminations().stream().map(examination -> examination.getStartDate().after(Date.from(instant))).count() > 0){
+            apiResponse = new ApiResponse(Boolean.FALSE, "You cannot delete a practitioner because there are examinations in executing phase");
             throw new BadRequestException(apiResponse);
         }
 
